@@ -17,10 +17,9 @@ Teams keep long-lived branches (DEV → UAT → PROD). Hotfixes are made on PROD
 | Track each change across DEV/UAT/PROD (patch-id, backport trailers, PR numbers) | ✅ |
 | Store and share testing provenance with git notes; inherit it across copies of a change | ✅ |
 | Report UNKNOWN (never "tested") when a clone has no provenance metadata | ✅ |
-| Commit trailers on the final merge commit | 🚧 |
 | Predict conflicts with a dry-run merge (`git merge-tree --write-tree`) | ✅ |
 | Show each conflict side's origin (`git blame`), test status and a recommendation | ✅ |
-| Write a standard Git merge commit with provenance trailers | 🚧 |
+| Write a standard Git merge commit with provenance trailers (`provgit merge`) | ✅ |
 | Plain-English conflict explanations from a local open-weight model (Ollama) | 🚧 |
 
 ## Install
@@ -55,6 +54,8 @@ provgit import-ci demo-repo/ci_results.json -C demo-repo  # load CI results into
 provgit record <sha> --ci passed --env prod               # record one CI result by hand
 provgit status <sha> --branches PROD UAT DEV --prod PROD  # status of one commit, inherited from its copies
 provgit predict DEV --into UAT --prod PROD -C demo-repo   # dry-run merge: each conflict, its origin, tested or not
+git -C demo-repo checkout UAT
+provgit merge DEV --into UAT --prod PROD --prefer-tested -C demo-repo   # real merge commit with provenance trailers
 provgit show <sha>                                        # patch-id + backport references of a commit
 ```
 
@@ -68,6 +69,36 @@ provgit show <sha>                                        # patch-id + backport 
 4. warns when a side is a backport whose code was edited during conflict resolution.
 
 Even for a clean merge it lists the incoming changes that were never tested: *tested alone ≠ tested together*. It exits 1 when there are conflicts, so it can be used as a CI gate. `--json` gives machine-readable output.
+
+### Merging with provenance
+
+`provgit merge DEV --into UAT` shows the same report, then picks a side for each conflict and writes a **normal Git merge commit** (`git merge --no-ff`, two parents):
+
+- `--prefer-tested` keeps the tested side when exactly one side is tested. If both or neither are tested, or a side is a backport edited during a conflict, provgit stops instead of guessing.
+- `--take A` / `--take B` keeps one side for every conflict.
+- Without a flag, in a terminal, it asks for each conflict (`[A] / [B] / [m]anual / [q]uit`).
+- `--rerere` lets Git remember the resolution and reuse it next time.
+
+The commit message records the decision as standard Git trailers, readable with `git log --format='%(trailers)'` or `git interpret-trailers --parse`:
+
+```
+Merge DEV (051a3c9) into UAT
+
+provgit resolved 1 conflict using testing provenance.
+The merge result itself is untested: run CI before promoting.
+
+Provgit-Resolved: "settings.py":2 kept=A(UAT) 536da8c PROD_VERIFIED
+Provgit-Rejected: "settings.py":2 B(DEV) 051a3c9 UNTESTED
+Provgit-Untested-Incoming: b77b736 051a3c9
+Provgit-Tested-Together: no
+Provgit-Version: 0.1.0
+```
+
+Trailers are part of the commit, so they survive any clone, even one without the git notes.
+
+**Safety.** provgit merge never leaves a half-finished merge: on any error, or Ctrl-C, it runs `git merge --abort`. It refuses to start with uncommitted changes, a merge in progress, or when the target branch is not checked out. Both branches are pinned to their SHAs when the report is made; if either moves before the merge, it stops. Every conflict block must match the report exactly, so provgit never writes a side you did not see; ambiguous blocks (for example a reStructuredText `=======` heading inside a conflict) are left to you. It never writes through symlinks, and leaves symlink and submodule conflicts to you. File names are sanitised, so a file name cannot forge a trailer or send escape codes to your terminal.
+
+**Trailers are an audit record, not proof.** Anyone can type a trailer into a commit message, so provgit never reads trailers to decide whether something was tested. Trust comes only from CI results in `refs/notes/provenance`; in a real deployment, only the CI bot should be allowed to push that ref.
 
 ### Trust levels
 

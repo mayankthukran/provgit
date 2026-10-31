@@ -11,15 +11,25 @@ class GitError(RuntimeError):
     pass
 
 
-def git(*args: str, cwd: str = ".", input: str | None = None, check: bool = True) -> str:
-    """Run a git command and return stdout as text."""
-    proc = subprocess.run(
+def run(*args: str, cwd: str = ".", input: str | None = None) -> subprocess.CompletedProcess:
+    """Run a git command and return the CompletedProcess (stdout/stderr as text).
+
+    Output is decoded as UTF-8 with surrogateescape, so files in other encodings
+    (Latin-1, binary) never crash provgit and round-trip byte for byte.
+    """
+    return subprocess.run(
         ["git", *args],
         cwd=cwd,
         input=input,
         capture_output=True,
-        text=True,
+        encoding="utf-8",
+        errors="surrogateescape",
     )
+
+
+def git(*args: str, cwd: str = ".", input: str | None = None, check: bool = True) -> str:
+    """Run a git command and return stdout as text. Raises GitError on failure if check."""
+    proc = run(*args, cwd=cwd, input=input)
     if check and proc.returncode != 0:
         raise GitError(f"git {' '.join(args)} failed: {proc.stderr.strip()}")
     return proc.stdout

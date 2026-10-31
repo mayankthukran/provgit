@@ -133,6 +133,15 @@ def dry_run_merge(into: str, source: str, cwd: str = ".") -> tuple[str, list[str
 
 # --- 2. conflict hunks --------------------------------------------------------
 
+def split_lines(text: str) -> list[str]:
+    """Split on "\n" only, like git does. str.splitlines() also splits on form feeds
+    and Unicode separators, which would shift line numbers for git blame."""
+    lines = text.split("\n")
+    if lines and lines[-1] == "":
+        lines.pop()
+    return lines
+
+
 def parse_hunks(text: str) -> list[tuple[list[str], int, list[str], int]]:
     """Split a file with conflict markers into (a_lines, a_start, b_lines, b_start) hunks.
 
@@ -146,7 +155,7 @@ def parse_hunks(text: str) -> list[tuple[list[str], int, list[str], int]]:
     a: list[str] = []
     b: list[str] = []
     a_start = b_start = 0
-    for line in text.splitlines():
+    for line in split_lines(text):
         if state is None and line.startswith("<<<<<<<"):
             state, a, b = "a", [], []
             a_start, b_start = a_line + 1, b_line + 1
@@ -240,6 +249,8 @@ def recommend(a: Side, b: Side) -> str:
 def predict(source: str, into: str, prod: str | None = None, cwd: str = ".",
             limit: int = 500) -> Report:
     """Dry-run merging `source` into `into` and explain every conflict."""
+    # Paths from merge-tree are relative to the repo root; run everything from there.
+    cwd = git("rev-parse", "--show-toplevel", cwd=cwd).strip()
     tree, paths = dry_run_merge(into, source, cwd=cwd)
     base = git("merge-base", into, source, cwd=cwd).strip()
 
