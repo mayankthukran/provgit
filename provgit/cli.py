@@ -10,6 +10,8 @@ from . import __version__
 from . import provenance as prov
 from .gitutil import GitError, commit_message, parse_backport_refs, patch_id
 from .matcher import change_of, track
+from .merger import A, B, MergeStopped, choose, execute, prepare, start_manual
+from .merger import clean as safe
 from .predictor import predict
 
 ICON = {
@@ -92,7 +94,11 @@ def _cmd_predict(args) -> int:
     if args.json:
         print(json.dumps(rep.to_dict(), indent=2))
         return 1 if rep.conflicts else 0
+    _print_report(rep)
+    return 1 if rep.conflicts else 0
 
+
+def _print_report(rep) -> None:
     if rep.clean:
         print(f"✅ No conflicts: {rep.source} → {rep.into} merges cleanly.")
     else:
@@ -101,17 +107,17 @@ def _cmd_predict(args) -> int:
     for c in rep.conflicts:
         print()
         if c.a.lines or c.b.lines:
-            print(f"{c.path}  (Side A line {c.a.start}, Side B line {c.b.start})")
+            print(f"{safe(c.path)}  (Side A line {c.a.start}, Side B line {c.b.start})")
         else:
-            print(f"{c.path}  (whole-file conflict)")
+            print(f"{safe(c.path)}  (whole-file conflict)")
         for label, s in (("A", c.a), ("B", c.b)):
             print(f"  Side {label} ({s.branch}):")
             for line in s.lines or ["(no lines: deleted or whole file)"]:
-                print(f"     | {line}")
+                print(f"     | {safe(line)}")
             for o in s.origins:
                 copies = "  ".join(f"{br}={','.join(x[:7] for x in shas)}"
                                    for br, shas in o.copies.items())
-                print(f"     from {o.sha[:7]} \"{o.title}\"   [{copies}]")
+                print(f"     from {o.sha[:7]} \"{safe(o.title)}\"   [{copies}]")
                 print(f"     {ICON[o.level]} {o.level} — {o.reason}")
         print(f"  → {c.recommendation}")
 
@@ -120,11 +126,68 @@ def _cmd_predict(args) -> int:
         print(f"⚠️  Tested alone ≠ tested together. {len(rep.untested_incoming)} incoming "
               f"change(s) from {rep.source} are not tested:")
         for o in rep.untested_incoming:
-            print(f"   {ICON[o.level]} {o.sha[:7]} {o.title} — {o.level}")
+            print(f"   {ICON[o.level]} {o.sha[:7]} {safe(o.title)} — {o.level}")
     elif rep.clean:
         print("   Every incoming change passed CI on its own, but not together: "
               "run CI on the merge result.")
-    return 1 if rep.conflicts else 0
+
+
+def _ask(n: int, c) -> str:
+    """Ask the user for one conflict. Returns A, B, 'm' (manual) or 'q' (quit)."""
+    prompt = (f"Conflict {n} ({safe(c.path)}): keep [A] {c.a.branch} {ICON[c.a.level]} / "
+              f"[B] {c.b.branch} {ICON[c.b.level]} / [m]anual / [q]uit? ")
+    while True:
+        try:
+            ans = input(prompt).strip().lower()
+        except EOFError:
+            return "q"
+        if ans in ("a", "b"):
+            return ans.upper()
+        if ans in ("m", "q"):
+            return ans
+
+
+def _cmd_merge(args) -> int:
+    try:
+        plan = prepare(args.source, args.into, prod=args.prod, cwd=args.repo, limit=args.limit)
+        _print_report(plan.report)
+        print()
+
+        interactive = sys.stdin.isatty()
+        for n, c in enumerate(plan.report.conflicts, 1):
+            pick, reason = choose(c, args.prefer_tested, args.take)
+            if pick is None and interactive:
+                print(f"provgit won't choose for conflict {n}: {reason}.")
+                pick = _ask(n, c)
+                if pick == "q":
+                    print("Stopped. Nothing was changed.")
+                    return 1
+                if pick == "m":
+                    start_manual(plan)
+                    print(f"Merge started with conflicts left in the files. Resolve them, "
+                          f"`git add` them, then `git commit` (or `git merge --abort`).")
+                    return 1
+            elif pick is None:
+                print(f"provgit won't choose for conflict {n} ({safe(c.path)}): {reason}.")
+                print("Nothing was changed. Use --take A|B, or run in a terminal to choose.")
+                return 1
+            else:
+                print(f"Conflict {n} ({safe(c.path)}): keeping Side {pick} — {reason}.")
+            plan.choices.append(pick)
+
+        res = execute(plan, rerere=args.rerere)
+    except MergeStopped as e:
+        print(f"stopped: {e}. Nothing was changed.", file=sys.stderr)
+        return 1
+
+    if res.status == "up-to-date":
+        print(f"Already up to date: {args.into} contains {args.source}.")
+        return 0
+    print(f"✅ Merge commit {res.sha[:7]} written on {args.into}:")
+    print()
+    for line in res.message.splitlines():
+        print(f"   {line}")
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -174,6 +237,20 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--json", action="store_true")
     _add_repo(p)
     p.set_defaults(func=_cmd_predict)
+
+    p = sub.add_parser("merge", help="merge with provenance: pick a side per conflict, "
+                                      "standard merge commit with trailers")
+    p.add_argument("source", help="branch to merge in (e.g. DEV)")
+    p.add_argument("--into", required=True, help="branch to merge into; must be checked out")
+    p.add_argument("--prod", help="name of the production branch (e.g. PROD)")
+    g = p.add_mutually_exclusive_group()
+    g.add_argument("--prefer-tested", action="store_true",
+                   help="keep the tested side when exactly one side is tested")
+    g.add_argument("--take", choices=[A, B], help="keep this side for every conflict")
+    p.add_argument("--rerere", action="store_true", help="let git remember and reuse the resolution")
+    p.add_argument("--limit", type=int, default=500)
+    _add_repo(p)
+    p.set_defaults(func=_cmd_merge)
 
     args = parser.parse_args(argv)
     if not getattr(args, "func", None):
