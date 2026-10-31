@@ -1,0 +1,30 @@
+# Real run, not edited: qwen2.5-coder:14b on Apple M3, 8 GB RAM (model 54% on CPU). No answer within 300 s:
+# provgit printed its full verdict, said the model was unavailable, and exited normally (exit code 1 = conflicts).
+
+$ provgit explain DEV --into UAT --prod PROD -C demo-repo
+🤖 explaining 1/1 settings.py …
+⚠️  1 conflict: DEV → UAT
+
+settings.py  (Side A line 2, Side B line 2)
+  Side A (UAT):
+     | TIMEOUT = 30  # stop prod outage
+     from 5f5671f "Hotfix #812: raise timeout to stop prod outage"   [PROD=7287e6d  UAT=5f5671f]
+     🟢 PROD_VERIFIED — CI passed on 7287e6d and change is in PROD
+  Side B (DEV):
+     | TIMEOUT = 5  # shorter jobs
+     from 12864a0 "PR #845: lower timeout for faster batch jobs"   [DEV=12864a0]
+     🔴 UNTESTED — no CI record for any copy of this change
+  → Keep Side A (UAT): it is PROD_VERIFIED. Side B (DEV) is UNTESTED; test it before taking it.
+
+⚠️  Tested alone ≠ tested together. 2 incoming change(s) from DEV are not tested:
+   🔴 b1cf89f PR #830: log retry attempts — UNTESTED
+   🔴 12864a0 PR #845: lower timeout for faster batch jobs — UNTESTED
+
+🤖 AI explanations
+
+Conflict 1: settings.py (Side A line 2, Side B line 2)
+  🤖 no answer from the model within 300s
+
+🤖 model not available: no answer from the model within 300s
+   Showing provgit's verdict only. Run `provgit ai-check`.
+(total time 5:02)

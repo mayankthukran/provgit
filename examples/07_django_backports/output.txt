@@ -1,0 +1,120 @@
+⚪ [6.1.x] Fixed #37463 -- Fixed attrs mutation in legend_tag().
+   main=817df1c  stable/6.1.x=8485c6a
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked 817df1c ↔ 8485c6a [exact] same patch-id
+   linked 817df1c ↔ 8485c6a [declared] django trailer
+
+⚪ [6.1.x] Fixed #37349 -- Documented that JSONField doesn't guarantee preserving object key order.
+   main=c616200  stable/6.1.x=317287d
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked c616200 ↔ 317287d [exact] same patch-id
+   linked c616200 ↔ 317287d [declared] django trailer
+
+⚪ [6.1.x] Fixed #37456 -- Converted contribution process diagram to plain SVG.
+   main=e9cf067  stable/6.1.x=5e109ba
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked e9cf067 ↔ 5e109ba [exact] same patch-id
+   linked e9cf067 ↔ 5e109ba [declared] django trailer
+
+⚪ [6.1.x] Confirmed release date for 6.1.3, 6.0.10, and 5.2.19.
+   main=2ebb1aa  stable/6.1.x=6d7ff03
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked 2ebb1aa ↔ 6d7ff03 [exact] same patch-id
+   linked 2ebb1aa ↔ 6d7ff03 [declared] django trailer
+
+⚪ [6.1.x] Fixed test_asgeojson() on MySQL 9.5.
+   main=a26ceb0  stable/6.1.x=fc85ec4
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked a26ceb0 ↔ fc85ec4 [exact] same patch-id
+   linked a26ceb0 ↔ fc85ec4 [declared] django trailer
+
+⚪ [6.1.x] Fixed #37447 -- Fixed makemessages with non-ASCII file names on Windows.
+   main=fa214ea  stable/6.1.x=be876ef
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked fa214ea ↔ be876ef [exact] same patch-id
+   linked fa214ea ↔ be876ef [declared] django trailer
+
+⚪ [6.1.x] Refs #36717 -- Noted RedirectURLMixin signature changes in 6.1 release notes.
+   main=79502d0  stable/6.1.x=f09c88e
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked 79502d0 ↔ f09c88e [exact] same patch-id
+   linked 79502d0 ↔ f09c88e [declared] django trailer
+
+⚪ [6.1.x] Fixed #37431 -- Added support for serializing frozendicts in migrations.
+   main=2fff3e9  stable/6.1.x=9f52f9a
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked 2fff3e9 ↔ 9f52f9a [declared] django trailer; same changed lines, applied to different surrounding code
+
+⚪ [6.1.x] Doc'd ContentType.model_class behaviour for stale content types.
+   main=45ce894  stable/6.1.x=9eb046e
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked 45ce894 ↔ 9eb046e [exact] same patch-id
+   linked 45ce894 ↔ 9eb046e [declared] django trailer
+
+⚪ [6.1.x] Fixed #36664 -- Doc'd Python 3.15 compatibility.
+   main=c6ebf51  stable/6.1.x=6feba4e
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked c6ebf51 ↔ 6feba4e [declared] django trailer; code was modified during backport
+
+⚪ [6.1.x] Fixed #37272 -- Documented the annual release cycle within the release process docs.
+   main=11af25c  stable/6.1.x=6762bd7
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked 11af25c ↔ 6762bd7 [exact] same patch-id
+   linked 11af25c ↔ 6762bd7 [declared] django trailer
+
+⚪ [6.1.x] Fixed #37397 -- Clarified DATA_UPLOAD_MAX_MEMORY_SIZE behavior on request.body vs request.POST.
+   main=b33bab3  stable/6.1.x=1e01021
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked b33bab3 ↔ 1e01021 [exact] same patch-id
+   linked b33bab3 ↔ 1e01021 [declared] django trailer
+
+⚪ [6.1.x] Fixed #37411 -- Added compatibility for oracledb 26.0.0+.
+   main=cf63ff2  stable/6.1.x=23c8249
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked cf63ff2 ↔ 23c8249 [exact] same patch-id
+   linked cf63ff2 ↔ 23c8249 [declared] django trailer
+
+⚪ [6.1.x] Fixed #37412, Refs #34041 -- Added backwards incompatible note for admin breadcrumb changes.
+   main=38e2188  stable/6.1.x=6a3b3ca
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked 38e2188 ↔ 6a3b3ca [exact] same patch-id
+   linked 38e2188 ↔ 6a3b3ca [declared] django trailer
+
+⚪ [6.1.x] Fixed #29504 -- Documented limitations of integer-like keys in JSONField.
+   main=badbcf2  stable/6.1.x=7e8a8ea
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked badbcf2 ↔ 7e8a8ea [exact] same patch-id
+   linked badbcf2 ↔ 7e8a8ea [declared] django trailer
+
+⚪ [6.1.x] Added follow-up to CVE-2026-15830 to security archive.
+   main=904349f  stable/6.1.x=2c59287
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked 904349f ↔ 2c59287 [exact] same patch-id
+   linked 904349f ↔ 2c59287 [declared] django trailer
+
+⚪ [6.1.x] Fixed #37403 -- Fixed JSONField __in crash on SQLite with Value(None) expressions.
+   main=1b4d021  stable/6.1.x=0931d3c
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked 1b4d021 ↔ 0931d3c [exact] same patch-id
+   linked 1b4d021 ↔ 0931d3c [declared] django trailer
+
+⚪ [6.1.x] Refs #37065 -- Added missing await in method_decorator example.
+   main=cf564bf  stable/6.1.x=04f978e
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked cf564bf ↔ 04f978e [exact] same patch-id
+   linked cf564bf ↔ 04f978e [declared] django trailer
+
+⚪ [6.1.x] Fixed #37405 -- Fixed crash if sort_keys option is used with YAML serializer.
+   main=a269574  stable/6.1.x=bc1f112
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked a269574 ↔ bc1f112 [exact] same patch-id
+   linked a269574 ↔ bc1f112 [declared] django trailer
+
+⚪ [6.1.x] Added trailing newline to 6.1.3.txt.
+   main=8c34887  stable/6.1.x=75856a7
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+   linked 8c34887 ↔ 75856a7 [exact] same patch-id
+   linked 8c34887 ↔ 75856a7 [declared] django trailer
+
+⚪ [6.1.x] Removed reference to 6.0.8 from 6.1.2 and 5.2.18 release notes.
+   main=2bc761b  stable/6.1.x=cbf5477

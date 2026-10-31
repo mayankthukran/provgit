@@ -20,7 +20,9 @@ Teams keep long-lived branches (DEV → UAT → PROD). Hotfixes are made on PROD
 | Predict conflicts with a dry-run merge (`git merge-tree --write-tree`) | ✅ |
 | Show each conflict side's origin (`git blame`), test status and a recommendation | ✅ |
 | Write a standard Git merge commit with provenance trailers (`provgit merge`) | ✅ |
-| Plain-English conflict explanations from a local open-weight model (Ollama) | 🚧 |
+| Plain-English conflict explanations from a local open-weight model (`provgit explain`, Ollama) | ✅ |
+| Share provenance between clones (`provgit sync`); several records per commit, newest wins | ✅ |
+| Tested on real Django backport history (237 of 237 backports linked) | ✅ |
 
 ## Install
 
@@ -56,6 +58,9 @@ provgit status <sha> --branches PROD UAT DEV --prod PROD  # status of one commit
 provgit predict DEV --into UAT --prod PROD -C demo-repo   # dry-run merge: each conflict, its origin, tested or not
 git -C demo-repo checkout UAT
 provgit merge DEV --into UAT --prod PROD --prefer-tested -C demo-repo   # real merge commit with provenance trailers
+provgit explain DEV --into UAT --prod PROD -C demo-repo   # predict + plain-English explanation from a local model
+provgit ai-check                                          # is the local model ready?
+provgit sync [--push]                                     # share CI results (git notes) with the team
 provgit show <sha>                                        # patch-id + backport references of a commit
 ```
 
@@ -115,16 +120,47 @@ Trailers are part of the commit, so they survive any clone, even one without the
 
 1. **exact**: same `git patch-id` (the diff is identical, only the SHA changed).
 2. **declared**: a backport trailer names the source commit: `(cherry picked from commit X)` (CPython, `git cherry-pick -x`) or `Backport of X from main.` (Django). This still links copies whose code was edited during conflict resolution; those are marked *partial*, because the edited lines were never tested.
-3. **referenced**: the titles share a PR or issue number (`#812`, `GH-112400`).
+3. **referenced**: the titles share a PR or issue number (`#812`, `GH-112400`). This is weak evidence, so it only links commits that have no stronger partner on the other branch: ticket numbers can never chain separate fixes together (which would let one change inherit another change's CI result).
+
+When a declared backport's patch-id differs, provgit compares only the added and removed lines. If they are identical and only the surrounding code differs, the link is "same changed lines, different surrounding code" and is **not** marked partial.
 
 ### Where provenance is stored
 
-CI results are JSON in the git notes ref `refs/notes/provenance`. Notes attach data to a commit without changing its SHA, but a plain `git clone` does not fetch them. Share them with:
+CI results are JSON in the git notes ref `refs/notes/provenance`. Notes attach data to a commit without changing its SHA, but a plain `git clone` does not fetch them, so a fresh clone reports ⚪ UNKNOWN. Share them with:
 
 ```bash
-git push origin refs/notes/provenance
-git fetch origin refs/notes/provenance:refs/notes/provenance
+provgit sync            # fetch the team's records and merge them into yours
+provgit sync --push     # ...and publish yours (opt-in)
 ```
+
+`sync` fetches into `refs/notes/provenance-remote` and merges with `git notes merge -s cat_sort_uniq`, which never conflicts: every clone's records are kept, one JSON record per line. For each commit the **newest record counts** (UTC timestamps with microseconds); `failed` wins an exact tie, records dated more than a day in the future are ignored, and the status says when results disagree. `provgit record` adds a record instead of overwriting, so synced records are never lost, and re-importing the same CI results adds nothing.
+
+**Trust model.** Anyone who can push `refs/notes/provenance` can write CI results, just as anyone who can push code can change it. In a real setup only the CI bot pushes notes and people run `provgit sync` without `--push`; branch protection rules apply to branches, so restrict who can push to the repository. The `env` field is informational only: whether a change is in production always comes from branch history (`git merge-base --is-ancestor`), never from a note. Notes larger than 64 KB and invalid lines are ignored.
+
+### Explaining conflicts with a local model
+
+`provgit explain` prints the normal `predict` report first, then asks a local open-weight model (`qwen2.5-coder` via Ollama) to explain each conflict in plain English and draft a combined resolution, labelled *AI draft, not tested*. How the model is used safely:
+
+- the model can never change a trust level, link or recommendation; trust comes only from CI records;
+- only a local Ollama is used unless `PROVGIT_ALLOW_REMOTE_LLM=1`; proxy settings are ignored and redirects refused, so code does not leave the machine by accident;
+- repository text is passed as untrusted data inside per-call random markers; answers are schema-checked, size-capped and cleaned of control characters, and cannot print trust levels;
+- drafts are only shown, never applied; the model digest and Ollama version are recorded with every answer.
+
+Without Ollama, `explain` shows the verdict and says the model is unavailable. Real output, including a mistake the model made, is in [`examples/05_ai_explain`](examples/05_ai_explain/).
+
+## Real data: Django
+
+`provgit track main stable/6.1.x` on a shallow clone of Django (2026-11-01, 3 s, 93 MB):
+
+| | |
+|---|---|
+| Declared backports on `stable/6.1.x` | 237 |
+| Linked to their `main` commit | **237 (100%)** |
+| Identical copies (same patch-id) | 225 |
+| Backports whose code was edited (lines never tested on `main`) | **10** |
+| Same changed lines, different surrounding code | 6 |
+
+8 of 8 links checked by hand were correct. Running on real history also found and fixed two bugs (ticket numbers chaining separate fixes, and false "partial" results). Details and commit links: [`examples/07_django_backports`](examples/07_django_backports/summary.md).
 
 See [`examples/`](examples/) for real inputs and outputs.
 

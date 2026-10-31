@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import textwrap
 
@@ -15,6 +16,7 @@ from .matcher import Link, change_of, track
 from .merger import A, B, MergeStopped, choose, execute, prepare, start_manual
 from .merger import clean as safe
 from .predictor import predict
+from .sync import SyncError, sync
 
 ICON = {
     prov.PROD_VERIFIED: "🟢",
@@ -77,7 +79,7 @@ def _print_link_ai(v: dict) -> None:
 
 
 def _cmd_track(args) -> int:
-    changes = track(args.branches, cwd=args.repo, limit=args.limit)
+    changes = track(args.branches, cwd=args.repo, limit=args.limit, exclude=args.exclude)
     verdicts = _track_ai(changes, args) if args.ai else {}
     rows = []
     for ch in changes:
@@ -270,6 +272,28 @@ def _cmd_explain(args) -> int:
     return code
 
 
+def _cmd_sync(args) -> int:
+    try:
+        r = sync(args.remote, push=args.push, cwd=args.repo)
+    except SyncError as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 1
+    if r["stale_merge_cleared"]:
+        print("⚠️  an interrupted notes merge was aborted first")
+    if r["remote_had_notes"]:
+        print(f"fetched {r['fetched']} note(s) from {r['remote']} · "
+              f"local notes {r['local_before']} → {r['local_after']}")
+    else:
+        print(f"{r['remote']} has no provenance notes yet · local notes: {r['local_after']}")
+    if r["pushed"] == "nothing to push":
+        print("nothing to push")
+    elif r["pushed"]:
+        print(f"pushed {r['local_after']} note(s) to {r['remote']} … ✅ {r['pushed']}")
+    else:
+        print("not pushed (use --push to publish your records)")
+    return 0
+
+
 def _cmd_ai_check(args) -> int:
     rows = ai.check()
     for what, ok, detail in rows:
@@ -353,6 +377,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--ai", action="store_true",
                    help="ask the local model whether edited/PR-linked commits are the same change (note only)")
     p.add_argument("--ai-limit", type=int, default=20, help="most links to check with --ai")
+    p.add_argument("--exclude", action="append", metavar="PATTERN",
+                   help="leave files matching PATTERN out of the patch-id (e.g. '*.po'); repeatable")
     _add_repo(p)
     p.set_defaults(func=_cmd_track)
 
@@ -397,6 +423,12 @@ def main(argv: list[str] | None = None) -> int:
     _add_repo(p)
     p.set_defaults(func=_cmd_explain)
 
+    p = sub.add_parser("sync", help="share testing provenance (git notes) with a remote")
+    p.add_argument("--remote", default="origin")
+    p.add_argument("--push", action="store_true", help="also publish local records (opt-in)")
+    _add_repo(p)
+    p.set_defaults(func=_cmd_sync)
+
     p = sub.add_parser("ai-check", help="is the local model (Ollama) ready?")
     p.set_defaults(func=_cmd_ai_check)
 
@@ -423,6 +455,10 @@ def main(argv: list[str] | None = None) -> int:
     except GitError as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
+    except BrokenPipeError:
+        # Output piped into `head` etc. and the reader closed early: not an error.
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        return 0
 
 
 if __name__ == "__main__":

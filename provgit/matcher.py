@@ -9,6 +9,7 @@ Commits are linked into one "change" by three kinds of evidence, strongest first
 
 from __future__ import annotations
 
+import os
 import re
 from dataclasses import dataclass, field
 
@@ -58,9 +59,22 @@ def title_numbers(title: str) -> set[str]:
     return set(_TITLE_NUM.findall(title))
 
 
-def _read_branch(branch: str, cwd: str, limit: int) -> list[Commit]:
+def shallow_roots(cwd: str) -> list[str]:
+    """Oldest commits of a shallow clone. They have no parent here, so `git log -p` would show
+    them as adding every file in the repository; they must not be read as changes."""
+    path = git("rev-parse", "--git-path", "shallow", cwd=cwd).strip()
+    full = path if os.path.isabs(path) else os.path.join(cwd, path)
+    try:
+        with open(full) as fh:
+            return [line.strip() for line in fh if line.strip()]
+    except FileNotFoundError:
+        return []
+
+
+def _read_branch(branch: str, cwd: str, limit: int, exclude: list[str] | None = None) -> list[Commit]:
     """Read commit messages and patch-ids for one branch in two git calls."""
-    raw = git("log", "--no-merges", f"-n{limit}", "--format=%H%x00%B%x01", branch, cwd=cwd)
+    skip = [f"^{s}" for s in shallow_roots(cwd)]
+    raw = git("log", "--no-merges", f"-n{limit}", "--format=%H%x00%B%x01", branch, *skip, cwd=cwd)
     commits: dict[str, Commit] = {}
     order: list[str] = []
     for chunk in raw.split("\x01"):
@@ -72,13 +86,28 @@ def _read_branch(branch: str, cwd: str, limit: int) -> list[Commit]:
         commits[sha] = Commit(sha, branch, msg.splitlines()[0] if msg else "", msg)
         order.append(sha)
 
-    patches = git("log", "--no-merges", f"-n{limit}", "-p", "--format=commit %H", branch, cwd=cwd)
+    paths = ["--", ".", *(f":(exclude){p}" for p in exclude)] if exclude else []
+    patches = git("log", "--no-merges", f"-n{limit}", "-p", "--format=commit %H", branch, *skip,
+                  *paths, cwd=cwd)
     pid_out = git("patch-id", "--stable", cwd=cwd, input=patches)
     for line in pid_out.splitlines():
         pid, sha = line.split()
         if sha in commits:
             commits[sha].patch_id = pid
     return [commits[s] for s in order]
+
+
+def _changed_lines(sha: str, cwd: str, exclude: list[str] | None = None) -> list[str]:
+    """Only the added and removed lines of a commit, per file, without context or line numbers."""
+    paths = ["--", ".", *(f":(exclude){p}" for p in exclude)] if exclude else []
+    out = git("show", "--no-color", "--format=", "--unified=0", sha, *paths, cwd=cwd)
+    keep = []
+    for line in out.splitlines():
+        if line.startswith(("+++ ", "--- ")):
+            keep.append(line)                       # which file
+        elif line[:1] in ("+", "-"):
+            keep.append(line)
+    return keep
 
 
 class _UnionFind:
@@ -96,12 +125,16 @@ class _UnionFind:
         self.parent[self.find(a)] = self.find(b)
 
 
-def track(branches: list[str], cwd: str = ".", limit: int = 500) -> list[Change]:
-    """Group the commits of several branches into logical changes."""
+def track(branches: list[str], cwd: str = ".", limit: int = 500,
+          exclude: list[str] | None = None) -> list[Change]:
+    """Group the commits of several branches into logical changes.
+
+    `exclude`: path patterns left out of the patch-id (e.g. "*.po" for huge translation files).
+    """
     by_sha: dict[str, Commit] = {}
     seen_on: dict[str, set[str]] = {}
     for br in branches:
-        for c in _read_branch(br, cwd, limit):
+        for c in _read_branch(br, cwd, limit, exclude):
             seen_on.setdefault(c.sha, set()).add(br)
             # A commit shared by several branches (common history) is kept once,
             # under the first branch listed.
@@ -133,19 +166,41 @@ def track(branches: list[str], cwd: str = ".", limit: int = 500) -> list[Change]
         for ref in parse_backport_refs(c.message):
             src = next((s for s in by_sha if s.startswith(ref.source_sha)), None)
             if src:
-                same_diff = by_sha[src].patch_id == c.patch_id
-                link(src, c.sha, "declared",
-                     f"{ref.style} trailer" + ("" if same_diff else "; code was modified during backport"))
+                if by_sha[src].patch_id == c.patch_id:
+                    detail = ""
+                elif _changed_lines(src, cwd, exclude) == _changed_lines(c.sha, cwd, exclude):
+                    # Same added/removed lines; only the unchanged lines around them differ
+                    # (the file on the other branch looks slightly different). Not partial.
+                    detail = "; same changed lines, applied to different surrounding code"
+                else:
+                    detail = "; code was modified during backport"
+                link(src, c.sha, "declared", f"{ref.style} trailer{detail}")
 
     # referenced: shared PR/issue number in titles, across different branches only
     by_num: dict[str, list[str]] = {}
     for c in by_sha.values():
         for n in title_numbers(c.title):
             by_num.setdefault(n, []).append(c.sha)
+    # A ticket number is weak evidence: "Refs #N" is used by many unrelated commits. Link two
+    # commits by number only while neither already has a partner on the other's branch, so
+    # numbers can join a lonely backport to its source but never chain complete pairs
+    # together (which would let one change inherit another change's CI result).
+    group_branches: dict[str, set[str]] = {}
+    for sha in by_sha:
+        group_branches.setdefault(uf.find(sha), set()).update(seen_on[sha])
+
     for n, shas in by_num.items():
-        for other in shas[1:]:
-            if by_sha[other].branch != by_sha[shas[0]].branch and uf.find(other) != uf.find(shas[0]):
-                link(shas[0], other, "referenced", f"both titles mention #{n}")
+        for i, x in enumerate(shas):
+            for y in shas[i + 1:]:
+                bx, by = by_sha[x].branch, by_sha[y].branch
+                rx, ry = uf.find(x), uf.find(y)
+                if bx == by or rx == ry:
+                    continue
+                if by in group_branches[rx] or bx in group_branches[ry]:
+                    continue
+                link(x, y, "referenced", f"both titles mention #{n}")
+                merged = group_branches.pop(rx) | group_branches.pop(ry)
+                group_branches[uf.find(x)] = merged
 
     groups: dict[str, list[str]] = {}
     for sha in by_sha:

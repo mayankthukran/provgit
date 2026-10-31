@@ -1,0 +1,21 @@
+$ provgit import-ci sync-demo/origin-src/ci_results.json -C sync-demo/alice
+imported 1 CI result(s) into refs/notes/provenance
+
+$ provgit sync --push -C sync-demo/alice
+origin has no provenance notes yet · local notes: 1
+pushed 1 note(s) to origin … ✅ ok
+
+$ provgit track PROD UAT DEV --prod PROD -C sync-demo/bob | grep -A2 Hotfix
+⚪ Hotfix #812: raise timeout to stop prod outage
+   PROD=d72897c  UAT=2903149  DEV=—
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance); change is in PROD
+
+$ provgit sync -C sync-demo/bob
+fetched 1 note(s) from origin · local notes 0 → 1
+not pushed (use --push to publish your records)
+
+$ provgit track PROD UAT DEV --prod PROD -C sync-demo/bob | grep -A2 Hotfix
+🟢 Hotfix #812: raise timeout to stop prod outage
+   PROD=d72897c  UAT=2903149  DEV=—
+   status: PROD_VERIFIED — CI passed on d72897c and change is in PROD
+
