@@ -14,7 +14,10 @@ Teams keep long-lived branches (DEV → UAT → PROD). Hotfixes are made on PROD
 |---|---|
 | Link a change across branches by `git patch-id` (same diff, new SHA) | ✅ |
 | Parse backport references: CPython `(cherry picked from commit …)` and Django `Backport of … from main.` | ✅ |
-| Store and share testing provenance with git notes and commit trailers | 🚧 |
+| Track each change across DEV/UAT/PROD (patch-id, backport trailers, PR numbers) | ✅ |
+| Store and share testing provenance with git notes; inherit it across copies of a change | ✅ |
+| Report UNKNOWN (never "tested") when a clone has no provenance metadata | ✅ |
+| Commit trailers on the final merge commit | 🚧 |
 | Predict conflicts with a dry-run merge (`git merge-tree --write-tree`) | 🚧 |
 | Show each conflict side's origin and test status | 🚧 |
 | Write a standard Git merge commit with provenance trailers | 🚧 |
@@ -45,7 +48,39 @@ The core verdicts use deterministic Git logic, so provgit works without a model 
 ## Usage
 
 ```bash
-provgit show <sha> -C path/to/repo     # patch-id + backport references of a commit
+scripts/make_demo_repo.sh demo-repo                       # the PROD/UAT/DEV scenario from the slide
+
+provgit track PROD UAT DEV --prod PROD -C demo-repo       # every change, its copies, its test status
+provgit import-ci demo-repo/ci_results.json -C demo-repo  # load CI results into git notes
+provgit record <sha> --ci passed --env prod               # record one CI result by hand
+provgit status <sha> --branches PROD UAT DEV --prod PROD  # status of one commit, inherited from its copies
+provgit show <sha>                                        # patch-id + backport references of a commit
+```
+
+### Trust levels
+
+| Level | Meaning |
+|---|---|
+| 🟢 PROD_VERIFIED | CI passed on a copy of this change, and the change is in the production branch |
+| 🔵 CI_PASSED | CI passed, not in production yet |
+| 🟡 IN_PROD_NO_CI | In production, but no CI record |
+| 🟠 CI_FAILED | CI failed |
+| 🔴 UNTESTED | Provenance metadata exists, but nothing for this change |
+| ⚪ UNKNOWN | This clone has no provenance metadata at all |
+
+### How a change is followed across branches
+
+1. **exact**: same `git patch-id` (the diff is identical, only the SHA changed).
+2. **declared**: a backport trailer names the source commit: `(cherry picked from commit X)` (CPython, `git cherry-pick -x`) or `Backport of X from main.` (Django). This still links copies whose code was edited during conflict resolution; those are marked *partial*, because the edited lines were never tested.
+3. **referenced**: the titles share a PR or issue number (`#812`, `GH-112400`).
+
+### Where provenance is stored
+
+CI results are JSON in the git notes ref `refs/notes/provenance`. Notes attach data to a commit without changing its SHA, but a plain `git clone` does not fetch them. Share them with:
+
+```bash
+git push origin refs/notes/provenance
+git fetch origin refs/notes/provenance:refs/notes/provenance
 ```
 
 See [`examples/`](examples/) for real inputs and outputs.

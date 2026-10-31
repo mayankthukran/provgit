@@ -1,0 +1,39 @@
+Demo repo ready in /home/claude/work/provgit/demo-repo
+Branches: PROD UAT DEV.  CI results to import: /home/claude/work/provgit/demo-repo/ci_results.json
+⚪ Initial service settings
+   PROD=18eeaa8  UAT=18eeaa8  DEV=18eeaa8
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance); change is in PROD
+
+⚪ Hotfix #812: raise timeout to stop prod outage
+   PROD=590a405  UAT=6fdacbc  DEV=—
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance); change is in PROD
+   linked 590a405 ↔ 6fdacbc [exact] same patch-id
+   linked 590a405 ↔ 6fdacbc [declared] cherry-pick trailer
+
+⚪ PR #845: lower timeout for faster batch jobs
+   PROD=—  UAT=—  DEV=58a6267
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+
+⚪ PR #830: log retry attempts
+   PROD=—  UAT=—  DEV=97c3bf5
+   status: UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+
+imported 1 CI result(s) into refs/notes/provenance
+🟡 Initial service settings
+   PROD=18eeaa8  UAT=18eeaa8  DEV=18eeaa8
+   status: IN_PROD_NO_CI — in PROD, but no CI record
+
+🟢 Hotfix #812: raise timeout to stop prod outage
+   PROD=590a405  UAT=6fdacbc  DEV=—
+   status: PROD_VERIFIED — CI passed on 590a405 and change is in PROD
+   linked 590a405 ↔ 6fdacbc [exact] same patch-id
+   linked 590a405 ↔ 6fdacbc [declared] cherry-pick trailer
+
+🔴 PR #845: lower timeout for faster batch jobs
+   PROD=—  UAT=—  DEV=58a6267
+   status: UNTESTED — no CI record for any copy of this change
+
+🔴 PR #830: log retry attempts
+   PROD=—  UAT=—  DEV=97c3bf5
+   status: UNTESTED — no CI record for any copy of this change
+
