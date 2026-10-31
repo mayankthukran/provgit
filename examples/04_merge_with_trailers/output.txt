@@ -1,57 +1,54 @@
-$ provgit import-ci demo-repo/ci_results.json -C demo-repo
-imported 1 CI result(s) into refs/notes/provenance
-
-$ git -C demo-repo checkout UAT
 $ provgit merge DEV --into UAT --prod PROD --prefer-tested -C demo-repo
 ⚠️  1 conflict: DEV → UAT
 
 settings.py  (Side A line 2, Side B line 2)
   Side A (UAT):
      | TIMEOUT = 30  # stop prod outage
-     from 3ecdc6c "Hotfix #812: raise timeout to stop prod outage"   [PROD=24f7227  UAT=3ecdc6c]
-     🟢 PROD_VERIFIED — CI passed on 24f7227 and change is in PROD
+     from 68eb381 "Hotfix #812: raise timeout to stop prod outage"   [PROD=ac61d22  UAT=68eb381]
+     🟢 PROD_VERIFIED — CI passed on ac61d22 and change is in PROD
   Side B (DEV):
      | TIMEOUT = 5  # shorter jobs
-     from a0628e8 "PR #845: lower timeout for faster batch jobs"   [DEV=a0628e8]
+     from 3f0667e "PR #845: lower timeout for faster batch jobs"   [DEV=3f0667e]
      🔴 UNTESTED — no CI record for any copy of this change
   → Keep Side A (UAT): it is PROD_VERIFIED. Side B (DEV) is UNTESTED; test it before taking it.
 
 ⚠️  Tested alone ≠ tested together. 2 incoming change(s) from DEV are not tested:
-   🔴 86ba736 PR #830: log retry attempts — UNTESTED
-   🔴 a0628e8 PR #845: lower timeout for faster batch jobs — UNTESTED
+   🔴 ca108b0 PR #830: log retry attempts — UNTESTED
+   🔴 3f0667e PR #845: lower timeout for faster batch jobs — UNTESTED
 
 Conflict 1 (settings.py): keeping Side A — Side A is PROD_VERIFIED, Side B is UNTESTED.
-✅ Merge commit 940c1eb written on UAT:
+✅ Merge commit f5484a9 written on UAT:
 
-   Merge DEV (a0628e8) into UAT
+   Merge DEV (3f0667e) into UAT
    
    provgit resolved 1 conflict using testing provenance.
    The merge result itself is untested: run CI before promoting.
    
-   Provgit-Resolved: "settings.py":2 kept=A(UAT) 3ecdc6c PROD_VERIFIED
-   Provgit-Rejected: "settings.py":2 B(DEV) a0628e8 UNTESTED
-   Provgit-Untested-Incoming: 86ba736 a0628e8
+   Provgit-Resolved: "settings.py":2 kept=A(UAT) 68eb381 PROD_VERIFIED
+   Provgit-Rejected: "settings.py":2 B(DEV) 3f0667e UNTESTED
+   Provgit-Untested-Incoming: ca108b0 3f0667e
    Provgit-Tested-Together: no
-   Provgit-Version: 0.1.0
-exit code: 0
+   Provgit-Version: 0.2.0
 
-$ git -C demo-repo log --graph --oneline -4
-*   940c1eb Merge DEV (a0628e8) into UAT
+$ git -C demo-repo log --graph --oneline -4             # a real merge commit with two parents
+*   f5484a9 Merge DEV (3f0667e) into UAT
 |\  
-| * a0628e8 PR #845: lower timeout for faster batch jobs
-| * 86ba736 PR #830: log retry attempts
-* | 3ecdc6c Hotfix #812: raise timeout to stop prod outage
+| * 3f0667e PR #845: lower timeout for faster batch jobs
+| * ca108b0 PR #830: log retry attempts
+* | 68eb381 Hotfix #812: raise timeout to stop prod outage
 |/  
 
-$ git -C demo-repo log -1 --format='%(trailers)'
-Provgit-Resolved: "settings.py":2 kept=A(UAT) 3ecdc6c PROD_VERIFIED
-Provgit-Rejected: "settings.py":2 B(DEV) a0628e8 UNTESTED
-Provgit-Untested-Incoming: 86ba736 a0628e8
+$ git -C demo-repo log -1 --format='%(trailers)'        # standard trailers, readable by any git
+Provgit-Resolved: "settings.py":2 kept=A(UAT) 68eb381 PROD_VERIFIED
+Provgit-Rejected: "settings.py":2 B(DEV) 3f0667e UNTESTED
+Provgit-Untested-Incoming: ca108b0 3f0667e
 Provgit-Tested-Together: no
-Provgit-Version: 0.1.0
+Provgit-Version: 0.2.0
 
-$ cat demo-repo/settings.py
+
+$ cat demo-repo/settings.py                             # the PROD_VERIFIED line was kept
 # Service settings
 TIMEOUT = 30  # stop prod outage
 RETRIES = 3
 LOG_LEVEL = "info"
+

@@ -10,6 +10,12 @@
 # Usage: scripts/make_demo_repo.sh [target-dir]   (default: ./demo-repo)
 set -euo pipefail
 
+# Fixed identity and dates: the same SHAs on every machine, so example outputs are reproducible.
+export GIT_AUTHOR_NAME=demo GIT_AUTHOR_EMAIL=demo@example.com
+export GIT_COMMITTER_NAME=demo GIT_COMMITTER_EMAIL=demo@example.com
+T=1790000000                                   # fixed start time; each commit is 60 s later
+tick() { T=$((T + 60)); export GIT_AUTHOR_DATE="@$T +0000" GIT_COMMITTER_DATE="@$T +0000"; }
+
 DIR="${1:-demo-repo}"
 rm -rf "$DIR"
 mkdir -p "$DIR"
@@ -19,7 +25,7 @@ git init -q -b PROD
 git config user.name "demo"
 git config user.email "demo@example.com"
 
-commit() { git add -A && git commit -q -m "$1"; }
+commit() { tick; git add -A && git commit -q -m "$1"; }
 
 cat > settings.py << 'EOF'
 # Service settings
@@ -48,6 +54,7 @@ HOTFIX=$(git rev-parse HEAD)
 
 # Backport the hotfix down to UAT (new SHA, -x adds the "cherry picked from" trailer)
 git checkout -q UAT
+tick
 git cherry-pick -x "$HOTFIX" > /dev/null
 
 # Testing provenance: only the PROD hotfix has a CI record.
@@ -58,5 +65,5 @@ cat > ci_results.json << EOF
 EOF
 git checkout -q PROD
 
-echo "Demo repo ready in $(pwd)"
-echo "Branches: PROD UAT DEV.  CI results to import: $(pwd)/ci_results.json"
+echo "Demo repo ready in $DIR"
+echo "Branches: PROD UAT DEV.  CI results to import: $DIR/ci_results.json"

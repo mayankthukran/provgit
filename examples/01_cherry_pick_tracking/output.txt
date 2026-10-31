@@ -1,19 +1,20 @@
-$ provgit show <hotfix sha on PROD>
+$ provgit show 373da81f97c8a59a09873681cf0920561aded4b1      # the hotfix on PROD
 {
-  "sha": "1d7dcba8c411457881ba3827c2931590c426cbb4",
+  "sha": "373da81f97c8a59a09873681cf0920561aded4b1",
   "patch_id": "08b998caea1139b20f16cfaaf98bb9dc9a29b058",
   "backport_of": []
 }
 
-$ provgit show <backport sha on UAT>
+$ provgit show eabcf758aea8cf2a1bc839071ca1243592b197dd      # the backport on UAT: new SHA, same patch_id, names its source
 {
-  "sha": "2f93007d76d6a7c2dc6ab7ed9ef74859e53cf19f",
+  "sha": "eabcf758aea8cf2a1bc839071ca1243592b197dd",
   "patch_id": "08b998caea1139b20f16cfaaf98bb9dc9a29b058",
   "backport_of": [
     {
-      "source_sha": "1d7dcba8c411457881ba3827c2931590c426cbb4",
+      "source_sha": "373da81f97c8a59a09873681cf0920561aded4b1",
       "style": "cherry-pick",
       "from_branch": null
     }
   ]
 }
+

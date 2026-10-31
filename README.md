@@ -4,6 +4,30 @@
 
 Built for Hacktoberfest 2026 Hack Day Sonipat, Problem 01: *Intelligent Git Conflict Resolution with Testing Provenance*.
 
+## Try it in 1 minute
+
+```bash
+git clone https://github.com/mayankthukran/provgit && cd provgit
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e .
+scripts/make_demo_repo.sh demo-repo                           # PROD / UAT / DEV from the problem slide
+provgit import-ci demo-repo/ci_results.json -C demo-repo      # the PROD hotfix passed CI
+provgit predict DEV --into UAT --prod PROD -C demo-repo       # the conflict, who wrote each side, tested or not
+git -C demo-repo checkout UAT && provgit merge DEV --into UAT --prod PROD --prefer-tested -C demo-repo
+git -C demo-repo log -1 --format=%B                           # a normal merge commit with provenance trailers
+```
+
+The demo repo has fixed commit dates, so you get exactly the SHAs and output shown in [`examples/`](examples/).
+
+## How we answer the problem's four questions
+
+| Question | Answer | Where |
+|---|---|---|
+| What if code changed during a conflicting backport? | The backport trailer still links it to its source, and the change is marked **partial**: the edited lines were never tested. If only the surrounding code differs (identical changed lines), it is recognised as such and not marked partial. | [`matcher.py`](provgit/matcher.py), [example 07](examples/07_django_backports/summary.md) |
+| How is provenance stored and transferred? | CI results live in git notes (`refs/notes/provenance`) and are shared with `provgit sync`; every merge also records its decision in standard commit trailers. | [`provenance.py`](provgit/provenance.py), [`sync.py`](provgit/sync.py), [example 06](examples/06_sync_between_clones/output.txt) |
+| What if a repo is cloned without the metadata? | Everything shows ⚪ UNKNOWN, never "tested", until `provgit sync` fetches the notes; merge trailers travel inside the commits anyway. | [example 06](examples/06_sync_between_clones/output.txt) |
+| Does the result stay standard Git? | Yes: a normal `git merge --no-ff` commit with two parents and standard trailers (`git interpret-trailers`). | [`merger.py`](provgit/merger.py), [example 04](examples/04_merge_with_trailers/output.txt) |
+
 ## The problem
 
 Teams keep long-lived branches (DEV → UAT → PROD). Hotfixes are made on PROD and backported down; new work is promoted up. When both touch the same lines, Git shows two blocks of text and nothing else. It does not say that one side passed CI and runs in production while the other was never tested.
@@ -87,16 +111,16 @@ Even for a clean merge it lists the incoming changes that were never tested: *te
 The commit message records the decision as standard Git trailers, readable with `git log --format='%(trailers)'` or `git interpret-trailers --parse`:
 
 ```
-Merge DEV (051a3c9) into UAT
+Merge DEV (3f0667e) into UAT
 
 provgit resolved 1 conflict using testing provenance.
 The merge result itself is untested: run CI before promoting.
 
-Provgit-Resolved: "settings.py":2 kept=A(UAT) 536da8c PROD_VERIFIED
-Provgit-Rejected: "settings.py":2 B(DEV) 051a3c9 UNTESTED
-Provgit-Untested-Incoming: b77b736 051a3c9
+Provgit-Resolved: "settings.py":2 kept=A(UAT) 68eb381 PROD_VERIFIED
+Provgit-Rejected: "settings.py":2 B(DEV) 3f0667e UNTESTED
+Provgit-Untested-Incoming: ca108b0 3f0667e
 Provgit-Tested-Together: no
-Provgit-Version: 0.1.0
+Provgit-Version: 0.2.0
 ```
 
 Trailers are part of the commit, so they survive any clone, even one without the git notes.
@@ -164,11 +188,20 @@ Without Ollama, `explain` shows the verdict and says the model is unavailable. R
 
 See [`examples/`](examples/) for real inputs and outputs.
 
+## Limitations
+
+- Ticket-number links (`#812`) are weak evidence; they are used only when a commit has no stronger link.
+- Notes are only as trustworthy as whoever can push them (see *Trust model* above).
+- The model's explanations can be wrong: [example 05](examples/05_ai_explain/output_earlier_run.txt) shows a real mistake. That is why they are labelled *not tested* and can never change the verdict.
+- CI runs on Linux (Python 3.10–3.12); we also tested by hand on macOS. Windows is not tested.
+
 ## Tests
 
 ```bash
 pytest -v
 ```
+
+`tests/test_examples.py` re-runs examples 01–04 and 06 and compares them with the committed outputs. After changing code, regenerate them with `scripts/regen_examples.sh` and commit the result.
 
 Tests build temporary Git repositories and check real Git behaviour (cherry-picks keep the patch-id, `-x` trailers link commits). CI runs them on every pull request.
 

@@ -165,7 +165,7 @@ def status_of(change: Change, prod_branch: str | None, cwd: str = ".") -> Status
 
     if not has_metadata(cwd):
         level = UNKNOWN
-        reason = "no provenance metadata in this clone (fetch refs/notes/provenance)"
+        reason = "no provenance metadata in this clone (run `provgit sync`)"
         if in_prod:
             reason += f"; change is in {prod_branch}"
         return Status(level, reason, partial=partial)
