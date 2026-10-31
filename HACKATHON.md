@@ -24,11 +24,13 @@ We are building **provgit**, a Git-integrated command-line tool that:
 
 | Model | How we run it | What it does in the product | Why we chose it |
 |---|---|---|---|
-| `qwen2.5-coder:14b` (open-weight, Apache-2.0) | Locally via Ollama (`http://localhost:11434`) | 1. Explains each side of a merge conflict in plain English, using the diff, commit messages and test provenance. 2. Judges whether two diffs are the same logical change when a backport was modified during conflict resolution (fuzzy matching). 3. Drafts a combined resolution, clearly labelled "AI suggestion, untested". | Code-specialised model that reads diffs and Git conflicts well, open-weight, and runs offline on our laptops. |
+| `qwen2.5-coder:14b` | Locally via Ollama, from `provgit/ai.py` | 1. `provgit explain`: for each predicted conflict, explains both sides in plain English, why they conflict and the risk of each choice, using the conflicting lines, the commit messages and each commit's diff of that file. 2. `provgit explain`: drafts a combined resolution, clearly labelled "AI draft, not tested". It is shown, never applied automatically. 3. `provgit track --ai`: for links where the two commits' code differs (a backport edited during conflict resolution, or two commits linked only by a PR number), judges whether they are the same logical change, and warns when it doubts the link. | Code-specialised model that reads diffs and Git conflicts well, open-weight, and runs offline on our laptops, so source code never leaves the machine. |
 
-The core verdicts (which commit a conflict side came from, and whether it was tested) are computed with deterministic Git logic (`git patch-id`, `git cherry`, `git merge-tree`, `git blame`), so the tool still works, and our CI tests still pass, when no model is running. The model adds explanation and fuzzy-match judgement on top.
+The core verdicts (which commit a conflict side came from, and whether it was tested) are computed with deterministic Git logic (`git patch-id`, `git merge-tree`, `git blame`, git notes), so the tool still works, and our CI tests still pass, when no model is running. The model only adds explanations, drafts and notes on top: it can never change a trust level, a link or a recommendation.
+
+How the model is used safely: only a local Ollama is used unless explicitly allowed; proxy settings are ignored; repository text is passed to the model as untrusted data; answers are validated, size-capped and cleaned before display; the model's text cannot show trust levels, so it cannot imitate provgit's verdict.
 
 No closed-model APIs are used in the product.
 
 ## AI coding assistants used during development
-None
+- Claude: used to speed up writing the code, tests and documentation within the hackathon time limit. Every change was reviewed and tested by the team.

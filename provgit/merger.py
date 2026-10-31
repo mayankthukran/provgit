@@ -226,9 +226,28 @@ def _resolve_path(root: str, path: str, stages: dict[int, str], conflicts: list[
     return "whole-file"
 
 
-def clean(value: str) -> str:
-    """One line, no control characters: a value cannot start a new trailer."""
-    return "".join(ch if ch >= " " and ch != "\x7f" else "?" for ch in value)
+_BIDI = set("‪‫‬‭‮⁦⁧⁨⁩")
+_ZERO_WIDTH = set("​‌‍⁠﻿")
+
+
+def clean(value: str, keep_tabs: bool = False) -> str:
+    """One line of safe text: a value cannot start a new trailer or control the terminal.
+
+    Replaces C0/C1 control characters (incl. ESC and the 8-bit CSI 0x9b) and bidi overrides
+    ("Trojan Source") with '?', and drops zero-width characters.
+    """
+    out = []
+    for ch in value:
+        o = ord(ch)
+        if ch == "\t" and keep_tabs:
+            out.append(ch)
+        elif o < 0x20 or o == 0x7f or 0x80 <= o <= 0x9f or ch in _BIDI:
+            out.append("?")
+        elif ch in _ZERO_WIDTH:
+            continue
+        else:
+            out.append(ch)
+    return "".join(out)
 
 
 def _quote(path: str) -> str:

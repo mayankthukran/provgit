@@ -5,11 +5,13 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import textwrap
 
 from . import __version__
+from . import ai
 from . import provenance as prov
-from .gitutil import GitError, commit_message, parse_backport_refs, patch_id
-from .matcher import change_of, track
+from .gitutil import GitError, commit_message, git, parse_backport_refs, patch_id
+from .matcher import Link, change_of, track
 from .merger import A, B, MergeStopped, choose, execute, prepare, start_manual
 from .merger import clean as safe
 from .predictor import predict
@@ -38,12 +40,53 @@ def _cmd_show(args) -> int:
     return 0
 
 
+def _track_ai(changes, args) -> dict[tuple[str, str], dict]:
+    """Second opinion from the model on links whose code differs. Annotation only."""
+    out: dict[tuple[str, str], dict] = {}
+    todo = [l for ch in changes for l in ch.links if ai.needs_check(l)]
+    if not todo:
+        return out
+    try:
+        inf = ai.info()
+    except ai.AIUnavailable as e:
+        print(f"🤖 model not available: {safe(str(e))}. Run `provgit ai-check`.", file=sys.stderr)
+        return out
+    for n, link in enumerate(todo[:args.ai_limit], 1):
+        print(f"🤖 checking link {n}/{min(len(todo), args.ai_limit)} "
+              f"{link.a[:7]} ↔ {link.b[:7]} …", file=sys.stderr)
+        try:
+            out[(link.a, link.b)] = ai.same_change(link, args.repo, inf).to_dict()
+        except ai.AIInvalid as e:
+            out[(link.a, link.b)] = {"error": f"model answer rejected: {e}"}
+        except ai.AIUnavailable as e:
+            out[(link.a, link.b)] = {"error": str(e)}
+            break
+    if len(todo) > args.ai_limit:
+        print(f"🤖 {len(todo) - args.ai_limit} more link(s) not checked (use --ai-limit)", file=sys.stderr)
+    return out
+
+
+def _print_link_ai(v: dict) -> None:
+    if "error" in v:
+        print(f"     🤖 {safe(v['error'])}")
+    elif v["same_change"]:
+        print(f"     🤖 {ai.label()}: same change, {v['confidence']} — \"{v['reason']}\"")
+    else:
+        print(f"     ⚠️  AI doubts this link ({v['confidence']}): \"{v['reason']}\"")
+        print("        Test status is inherited through this link; check it by hand.")
+
+
 def _cmd_track(args) -> int:
     changes = track(args.branches, cwd=args.repo, limit=args.limit)
+    verdicts = _track_ai(changes, args) if args.ai else {}
     rows = []
     for ch in changes:
         st = prov.status_of(ch, args.prod, cwd=args.repo)
-        rows.append({**ch.to_dict(), "status": st.to_dict()})
+        row = {**ch.to_dict(), "status": st.to_dict()}
+        for l in row["links"]:
+            if (l["a"], l["b"]) in verdicts:
+                l["ai"] = verdicts[(l["a"], l["b"])]
+        rows.append(row)
 
     if args.json:
         print(json.dumps(rows, indent=2))
@@ -53,7 +96,7 @@ def _cmd_track(args) -> int:
     rows.sort(key=lambda r: -len(r["commits"]))
     for r in rows:
         st = r["status"]
-        print(f"{ICON[st['level']]} {r['title']}")
+        print(f"{ICON[st['level']]} {safe(r['title'])}")
         cells = []
         for br in args.branches:
             shas = r["commits"].get(br)
@@ -62,6 +105,8 @@ def _cmd_track(args) -> int:
         print(f"   status: {st['level']} — {st['reason']}")
         for l in r["links"]:
             print(f"   linked {l['a'][:7]} ↔ {l['b'][:7]} [{l['kind']}] {l['detail']}")
+            if "ai" in l:
+                _print_link_ai(l["ai"])
         print()
     return 0
 
@@ -130,6 +175,106 @@ def _print_report(rep) -> None:
     elif rep.clean:
         print("   Every incoming change passed CI on its own, but not together: "
               "run CI on the merge result.")
+
+
+def _box(label: str, text: str) -> None:
+    wrapped = textwrap.wrap(text, width=88, initial_indent=f"{label}: ",
+                            subsequent_indent="  ") or [f"{label}:"]
+    for line in wrapped:
+        print(f"  │ {line}")
+
+
+def _print_explanation(e: "ai.Explanation") -> None:
+    print(f"  ┌ 🤖 {ai.label()} · explains only, does not change the verdict above")
+    _box("Side A", e.side_a)
+    _box("Side B", e.side_b)
+    _box("Why they conflict", e.why_conflict)
+    _box("Risk", e.risk)
+    if e.can_combine:
+        print("  │ Draft combined resolution (not tested):")
+        for line in e.draft:
+            print(f"  │    | {line}")
+        _box("Why", e.rationale)
+    else:
+        print("  │ No combined resolution proposed.")
+    if e.note:
+        print(f"  │ ⚠️  {e.note}")
+    m = e.meta
+    print(f"  └ {m.get('model')} {str(m.get('digest', ''))[:19]} · Ollama {m.get('ollama_version')} "
+          f"· {m.get('seconds')}s")
+
+
+def _cmd_explain(args) -> int:
+    rep = predict(args.source, args.into, prod=args.prod, cwd=args.repo, limit=args.limit)
+    code = 1 if rep.conflicts else 0
+    root = git("rev-parse", "--show-toplevel", cwd=args.repo).strip()   # conflict paths are root-relative
+    if not args.json:
+        _print_report(rep)
+
+    results: list[dict | None] = [None] * len(rep.conflicts)
+    todo = [i for i, c in enumerate(rep.conflicts) if c.a.lines or c.b.lines]
+    skipped_whole = len(rep.conflicts) - len(todo)
+    over = todo[args.max_conflicts:]
+    todo = todo[:args.max_conflicts]
+
+    unavailable = None
+    inf = None
+    if todo:
+        try:
+            inf = ai.info()
+        except ai.AIUnavailable as e:
+            unavailable = str(e)
+
+    if not args.json and rep.conflicts:
+        print()
+        print("🤖 AI explanations")
+    for n, i in enumerate(todo, 1):
+        c = rep.conflicts[i]
+        if unavailable:
+            results[i] = {"error": unavailable}
+            continue
+        print(f"🤖 explaining {n}/{len(todo)} {safe(c.path)} …", file=sys.stderr)
+        try:
+            e = ai.explain_conflict(c, root, inf)
+            results[i] = e.to_dict()
+            print(f"🤖 done in {e.meta.get('seconds')}s", file=sys.stderr)
+        except ai.AIInvalid as err:
+            results[i] = {"error": f"model answer rejected: {err}"}
+        except ai.AIUnavailable as err:
+            unavailable = str(err)
+            results[i] = {"error": unavailable}
+        if not args.json:
+            print()
+            print(f"Conflict {n}: {safe(c.path)} (Side A line {c.a.start}, Side B line {c.b.start})")
+            if "error" in results[i]:
+                print(f"  🤖 {safe(results[i]['error'])}")
+            else:
+                _print_explanation(e)
+
+    if args.json:
+        data = rep.to_dict()
+        for i, r in enumerate(results):
+            if r is not None:
+                data["conflicts"][i]["ai"] = r
+        print(json.dumps(data, indent=2))
+        return code
+
+    if unavailable:
+        print()
+        print(f"🤖 model not available: {safe(unavailable)}")
+        print("   Showing provgit's verdict only. Run `provgit ai-check`.")
+    if skipped_whole:
+        print(f"🤖 {skipped_whole} whole-file conflict(s) not explained (no lines to explain).")
+    if over:
+        print(f"🤖 {len(over)} more conflict(s) not explained (use --max-conflicts).")
+    return code
+
+
+def _cmd_ai_check(args) -> int:
+    rows = ai.check()
+    for what, ok, detail in rows:
+        print(f"{what:<8} {'✅' if ok else '❌'} {safe(detail)}")
+    return 0 if rows and all(ok for _, ok, _ in rows) else 1
 
 
 def _ask(n: int, c) -> str:
@@ -205,6 +350,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--prod", help="name of the production branch (e.g. PROD)")
     p.add_argument("--limit", type=int, default=500, help="commits read per branch")
     p.add_argument("--json", action="store_true")
+    p.add_argument("--ai", action="store_true",
+                   help="ask the local model whether edited/PR-linked commits are the same change (note only)")
+    p.add_argument("--ai-limit", type=int, default=20, help="most links to check with --ai")
     _add_repo(p)
     p.set_defaults(func=_cmd_track)
 
@@ -237,6 +385,20 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--json", action="store_true")
     _add_repo(p)
     p.set_defaults(func=_cmd_predict)
+
+    p = sub.add_parser("explain", help="predict + plain-English explanation of each conflict "
+                                        "from a local model (Ollama); never changes the verdict")
+    p.add_argument("source", help="branch to merge in (e.g. DEV)")
+    p.add_argument("--into", required=True, help="branch to merge into (e.g. UAT)")
+    p.add_argument("--prod", help="name of the production branch (e.g. PROD)")
+    p.add_argument("--max-conflicts", type=int, default=5, help="most conflicts to explain")
+    p.add_argument("--limit", type=int, default=500)
+    p.add_argument("--json", action="store_true")
+    _add_repo(p)
+    p.set_defaults(func=_cmd_explain)
+
+    p = sub.add_parser("ai-check", help="is the local model (Ollama) ready?")
+    p.set_defaults(func=_cmd_ai_check)
 
     p = sub.add_parser("merge", help="merge with provenance: pick a side per conflict, "
                                       "standard merge commit with trailers")

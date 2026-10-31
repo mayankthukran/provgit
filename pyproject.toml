@@ -19,3 +19,6 @@ provgit = "provgit.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["provgit*"]
+
+[tool.pytest.ini_options]
+markers = ["live: needs a running Ollama with the model pulled (run with PROVGIT_LIVE=1)"]
