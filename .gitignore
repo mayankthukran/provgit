@@ -11,3 +11,6 @@ demo-repo/
 .DS_Store
 .vscode/
 .idea/
+sync-demo/
+django-src/
+django-track*.json

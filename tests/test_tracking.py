@@ -142,3 +142,81 @@ def test_cli_track_json(demo):
     rows = json.loads(out.stdout)
     hotfix = next(r for r in rows if "Hotfix #812" in r["title"])
     assert hotfix["status"]["level"] == prov.UNKNOWN
+
+
+def test_ticket_numbers_do_not_chain_complete_pairs(tmp_path):
+    """Two separate backports that both say "Refs #5" must stay two changes (seen on Django)."""
+    repo = str(tmp_path / "chain")
+    git("init", "-q", "-b", "main", repo)
+    git("config", "user.name", "t", cwd=repo)
+    git("config", "user.email", "t@example.com", cwd=repo)
+
+    def commit(name, text, msg):
+        Path(repo, name).write_text(text)
+        git("add", "-A", cwd=repo)
+        git("commit", "-q", "-m", msg, cwd=repo)
+        return git("rev-parse", "HEAD", cwd=repo).strip()
+
+    commit("base", "0\n", "base")
+    git("branch", "stable", cwd=repo)
+    a = commit("a", "a\n", "Refs #5 -- Fix A")
+    b = commit("b", "b\n", "Refs #5 -- Fix B")
+    git("checkout", "-q", "stable", cwd=repo)
+    git("cherry-pick", "-x", a, cwd=repo)
+    git("cherry-pick", "-x", b, cwd=repo)
+
+    changes = track(["main", "stable"], cwd=repo)
+    for sha in (a, b):
+        ch = change_of(sha, changes)
+        assert len(ch.all_shas()) == 2, ch.all_shas()
+        assert not any(l.kind == "referenced" for l in ch.links)
+    prov.record(a, "passed", cwd=repo)
+    assert prov.status_of(change_of(b, changes), None, cwd=repo).level == prov.UNTESTED
+
+
+def test_backport_with_same_lines_but_different_context_is_not_partial(tmp_path):
+    """Seen on Django: the stable file differs around the fix, so patch-ids differ, but the
+    added/removed lines are identical. That is not an edited (partial) backport."""
+    repo = str(tmp_path / "ctx")
+    git("init", "-q", "-b", "main", repo)
+    git("config", "user.name", "t", cwd=repo)
+    git("config", "user.email", "t@example.com", cwd=repo)
+
+    def commit(text, msg):
+        Path(repo, "f.py").write_text(text)
+        git("add", "-A", cwd=repo)
+        git("commit", "-q", "-m", msg, cwd=repo)
+        return git("rev-parse", "HEAD", cwd=repo).strip()
+
+    commit("a\nb\nc\nTIMEOUT = 10\nd\n", "base")
+    git("branch", "stable", cwd=repo)
+    commit("a\nb\nc changed on main\nTIMEOUT = 10\nd\n", "unrelated main change")
+    fix = commit("a\nb\nc changed on main\nTIMEOUT = 30\nd\n", "Fix timeout")
+    git("checkout", "-q", "stable", cwd=repo)
+    commit("a\nb\nc\nTIMEOUT = 30\nd\n", f"[stable] Fix timeout\n\nBackport of {fix} from main.")
+
+    ch = change_of(fix, track(["main", "stable"], cwd=repo))
+    link = next(l for l in ch.links if l.kind == "declared")
+    assert "same changed lines" in link.detail
+    assert not is_partial(ch)
+
+
+def test_output_piped_into_head_does_not_crash(tmp_path):
+    """`provgit track ... | head` must not print a BrokenPipeError traceback (seen on Django)."""
+    import sys
+    repo = str(tmp_path / "big")
+    git("init", "-q", "-b", "main", repo)
+    stream = []
+    for i in range(1500):          # ~200 KB of track output: more than a pipe buffer holds
+        data = f"{i}\n"
+        stream += [f"commit refs/heads/main", f"committer t <t@example.com> {1700000000 + i} +0000",
+                   f"data {len(f'change {i}')}", f"change {i}",
+                   f"M 100644 inline f{i % 50}.txt", f"data {len(data)}", data.rstrip("\n"), ""]
+    subprocess.run(["git", "fast-import", "--quiet"], cwd=repo, check=True,
+                   input="\n".join(stream) + "\n", text=True)
+    code = "import sys; from provgit.cli import main; sys.exit(main(sys.argv[1:]))"
+    cmd = (f'"{sys.executable}" -c "{code}" track main --limit 2000 -C "{repo}" | head -1; '
+           'exit ${PIPESTATUS[0]}')
+    p = subprocess.run(["bash", "-c", cmd], capture_output=True, text=True)
+    assert "Traceback" not in p.stderr and "BrokenPipeError" not in p.stderr, p.stderr[-500:]
+    assert p.returncode == 0

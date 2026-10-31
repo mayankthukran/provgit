@@ -4,14 +4,23 @@ Storage: JSON in the notes ref `refs/notes/provenance`, attached to a commit wit
 changing its SHA. Notes are standard Git but are not fetched by a plain clone, so a
 repo without the ref reports UNKNOWN instead of pretending anything was tested.
 
-Share with:  git push origin refs/notes/provenance
-             git fetch origin refs/notes/provenance:refs/notes/provenance
+A note holds one JSON record per line, so records from several clones can be merged
+(`provgit sync`, git notes merge -s cat_sort_uniq). For one commit the newest record counts:
+timestamps are UTC with microseconds, `failed` wins an exact tie, and records dated more than
+a day in the future are ignored. Notes from other clones are untrusted input: notes larger
+than MAX_NOTE are skipped without being read, and invalid lines are ignored.
+
+Trust model: the `env` field is informational only. Whether a change is in production comes
+from branch ancestry (`git merge-base --is-ancestor`), never from a note.
+
+Share with:  provgit sync [--push]
 """
 
 from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 
 from .gitutil import git
 from .matcher import Change, is_partial
@@ -33,28 +42,90 @@ def has_metadata(cwd: str = ".") -> bool:
     return bool(out.strip())
 
 
+MAX_NOTE = 64_000
+FUTURE_SLACK = timedelta(days=1)
+_OLDEST = datetime.min.replace(tzinfo=timezone.utc)
+_KEYS = ("ci", "url", "env")
+
+
+def _now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="microseconds")
+
+
+def _when(rec: dict) -> datetime:
+    """Parsed UTC time of a record; a missing or invalid time counts as the oldest."""
+    try:
+        t = datetime.fromisoformat(str(rec.get("at", "")).replace("Z", "+00:00"))
+    except ValueError:
+        return _OLDEST
+    return (t if t.tzinfo else t.replace(tzinfo=timezone.utc)).astimezone(timezone.utc)
+
+
+def _valid(r) -> bool:
+    return isinstance(r, dict) and r.get("ci") in ("passed", "failed")
+
+
+def _note_size(sha: str, cwd: str) -> int | None:
+    """Size of the note blob on `sha` without reading it; None when there is no note."""
+    blob = git("notes", f"--ref={NOTES_REF}", "list", sha, cwd=cwd, check=False).strip()
+    if not blob:
+        return None
+    return int(git("cat-file", "-s", blob, cwd=cwd).strip())
+
+
+def read_all(sha: str, cwd: str = ".") -> list[dict]:
+    """Every valid CI record on a commit (a synced note holds one JSON object per line)."""
+    size = _note_size(sha, cwd)
+    if size is None or size > MAX_NOTE:
+        return []
+    text = git("notes", f"--ref={NOTES_REF}", "show", sha, cwd=cwd, check=False)
+    recs = []
+    for line in text.splitlines():
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if _valid(r):
+            recs.append(r)
+    if not recs:                      # a note written by hand: one JSON object over many lines
+        try:
+            r = json.loads(text)
+            recs = [r] if _valid(r) else []
+        except json.JSONDecodeError:
+            pass
+    limit = datetime.now(timezone.utc) + FUTURE_SLACK
+    return [r for r in recs if _when(r) <= limit]
+
+
+def read(sha: str, cwd: str = ".") -> dict | None:
+    """The record that counts for a commit: the newest; on an exact tie, 'failed' wins."""
+    recs = read_all(sha, cwd)
+    if not recs:
+        return None
+    return max(recs, key=lambda r: (_when(r), r["ci"] == "failed"))
+
+
 def record(sha: str, ci: str, cwd: str = ".", url: str | None = None, env: str | None = None) -> dict:
-    """Attach a CI result to a commit (overwrites an earlier record)."""
+    """Add a CI result to a commit, keeping earlier records (including synced ones).
+
+    If the newest record already says the same thing, nothing is added (re-imports stay clean).
+    """
     if ci not in {"passed", "failed"}:
         raise ValueError("ci must be 'passed' or 'failed'")
-    full = git("rev-parse", sha, cwd=cwd).strip()
-    data = {"ci": ci}
+    full = git("rev-parse", "--verify", f"{sha}^{{commit}}", cwd=cwd).strip()
+    data = {"ci": ci, "at": _now()}
     if url:
         data["url"] = url
     if env:
         data["env"] = env
-    git("notes", f"--ref={NOTES_REF}", "add", "-f", "-m", json.dumps(data), full, cwd=cwd)
+    newest = read(full, cwd)
+    if newest and all(newest.get(k) == data.get(k) for k in _KEYS):
+        return newest
+    lines = [json.dumps(r, sort_keys=True) for r in read_all(full, cwd)]
+    lines.append(json.dumps(data, sort_keys=True))
+    git("notes", f"--ref={NOTES_REF}", "add", "-f", "-F", "-", full, cwd=cwd,
+        input="\n".join(lines) + "\n")
     return data
-
-
-def read(sha: str, cwd: str = ".") -> dict | None:
-    out = git("notes", f"--ref={NOTES_REF}", "show", sha, cwd=cwd, check=False).strip()
-    if not out:
-        return None
-    try:
-        return json.loads(out)
-    except json.JSONDecodeError:
-        return None
 
 
 def import_ci(path: str, cwd: str = ".") -> int:
@@ -99,13 +170,19 @@ def status_of(change: Change, prod_branch: str | None, cwd: str = ".") -> Status
             reason += f"; change is in {prod_branch}"
         return Status(level, reason, partial=partial)
 
+    every = [r for s in change.all_shas() for r in read_all(s, cwd)]
+    n_pass = sum(r["ci"] == "passed" for r in every)
+    n_fail = len(every) - n_pass
+    if n_pass and n_fail:
+        note += f" ⚠️ CI results disagree ({n_pass} passed, {n_fail} failed); newest per commit is used"
+
     records = [(s, read(s, cwd)) for s in change.all_shas()]
     records = [(s, r) for s, r in records if r]
     passed = next((s for s, r in records if r.get("ci") == "passed"), None)
     failed = next((s for s, r in records if r.get("ci") == "failed"), None)
 
     if failed and not passed:
-        return Status(CI_FAILED, f"CI failed on {failed[:7]}", failed, partial)
+        return Status(CI_FAILED, f"CI failed on {failed[:7]}{note}", failed, partial)
     if passed and in_prod:
         return Status(PROD_VERIFIED, f"CI passed on {passed[:7]} and change is in {prod_branch}{note}", passed, partial)
     if passed:

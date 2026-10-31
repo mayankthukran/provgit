@@ -1,0 +1,1572 @@
+[
+ {
+  "id": "8485c6a",
+  "title": "[6.1.x] Fixed #37463 -- Fixed attrs mutation in legend_tag().",
+  "commits": {
+   "main": [
+    "817df1c4d6d38f416460d7d9354d7deab9d35139"
+   ],
+   "stable/6.1.x": [
+    "8485c6ac386c6d41cf46001851c19360275c7cc9"
+   ]
+  },
+  "links": [
+   {
+    "a": "817df1c4d6d38f416460d7d9354d7deab9d35139",
+    "b": "8485c6ac386c6d41cf46001851c19360275c7cc9",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "817df1c4d6d38f416460d7d9354d7deab9d35139",
+    "b": "8485c6ac386c6d41cf46001851c19360275c7cc9",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "317287d",
+  "title": "[6.1.x] Fixed #37349 -- Documented that JSONField doesn't guarantee preserving object key order.",
+  "commits": {
+   "main": [
+    "c61620099cfa1874c12771a4637e405f59c287a8"
+   ],
+   "stable/6.1.x": [
+    "317287d6cdf7ed463dccb4f08083329f0c69e77a"
+   ]
+  },
+  "links": [
+   {
+    "a": "c61620099cfa1874c12771a4637e405f59c287a8",
+    "b": "317287d6cdf7ed463dccb4f08083329f0c69e77a",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "c61620099cfa1874c12771a4637e405f59c287a8",
+    "b": "317287d6cdf7ed463dccb4f08083329f0c69e77a",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "5e109ba",
+  "title": "[6.1.x] Fixed #37456 -- Converted contribution process diagram to plain SVG.",
+  "commits": {
+   "main": [
+    "e9cf067c614fd08f2ba1d216edf213c6ff806554"
+   ],
+   "stable/6.1.x": [
+    "5e109ba2895f0db9679c03a1b23f0b40c0b9310f"
+   ]
+  },
+  "links": [
+   {
+    "a": "e9cf067c614fd08f2ba1d216edf213c6ff806554",
+    "b": "5e109ba2895f0db9679c03a1b23f0b40c0b9310f",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "e9cf067c614fd08f2ba1d216edf213c6ff806554",
+    "b": "5e109ba2895f0db9679c03a1b23f0b40c0b9310f",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "6d7ff03",
+  "title": "[6.1.x] Confirmed release date for 6.1.3, 6.0.10, and 5.2.19.",
+  "commits": {
+   "main": [
+    "2ebb1aaf1f18699e9c42f4a181d2693c61a501cb"
+   ],
+   "stable/6.1.x": [
+    "6d7ff03bbd1c2ef8f9fde1916e86244da8a0c883"
+   ]
+  },
+  "links": [
+   {
+    "a": "2ebb1aaf1f18699e9c42f4a181d2693c61a501cb",
+    "b": "6d7ff03bbd1c2ef8f9fde1916e86244da8a0c883",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "2ebb1aaf1f18699e9c42f4a181d2693c61a501cb",
+    "b": "6d7ff03bbd1c2ef8f9fde1916e86244da8a0c883",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "fc85ec4",
+  "title": "[6.1.x] Fixed test_asgeojson() on MySQL 9.5.",
+  "commits": {
+   "main": [
+    "a26ceb0903189bb534394db62e031403b2b9fa93"
+   ],
+   "stable/6.1.x": [
+    "fc85ec43806ac6d73b63b44fa3d36708b9e9b23c"
+   ]
+  },
+  "links": [
+   {
+    "a": "a26ceb0903189bb534394db62e031403b2b9fa93",
+    "b": "fc85ec43806ac6d73b63b44fa3d36708b9e9b23c",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "a26ceb0903189bb534394db62e031403b2b9fa93",
+    "b": "fc85ec43806ac6d73b63b44fa3d36708b9e9b23c",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "be876ef",
+  "title": "[6.1.x] Fixed #37447 -- Fixed makemessages with non-ASCII file names on Windows.",
+  "commits": {
+   "main": [
+    "fa214ea7b217a37484507b6222cca4915c70b4cc"
+   ],
+   "stable/6.1.x": [
+    "be876ef4edeb0342be7ae47927670325ce09fd7c"
+   ]
+  },
+  "links": [
+   {
+    "a": "fa214ea7b217a37484507b6222cca4915c70b4cc",
+    "b": "be876ef4edeb0342be7ae47927670325ce09fd7c",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "fa214ea7b217a37484507b6222cca4915c70b4cc",
+    "b": "be876ef4edeb0342be7ae47927670325ce09fd7c",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "f09c88e",
+  "title": "[6.1.x] Refs #36717 -- Noted RedirectURLMixin signature changes in 6.1 release notes.",
+  "commits": {
+   "main": [
+    "79502d08405dbf24efa39e8731320f31035b9e9c"
+   ],
+   "stable/6.1.x": [
+    "f09c88e70b64fce79219d5ddd621450bfa37b71e"
+   ]
+  },
+  "links": [
+   {
+    "a": "79502d08405dbf24efa39e8731320f31035b9e9c",
+    "b": "f09c88e70b64fce79219d5ddd621450bfa37b71e",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "79502d08405dbf24efa39e8731320f31035b9e9c",
+    "b": "f09c88e70b64fce79219d5ddd621450bfa37b71e",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "9f52f9a",
+  "title": "[6.1.x] Fixed #37431 -- Added support for serializing frozendicts in migrations.",
+  "commits": {
+   "main": [
+    "2fff3e9f493a9c85fb8a2294358c6751575ee4bf"
+   ],
+   "stable/6.1.x": [
+    "9f52f9af0e841c14e1ee52534ff1d67cadd099fa"
+   ]
+  },
+  "links": [
+   {
+    "a": "2fff3e9f493a9c85fb8a2294358c6751575ee4bf",
+    "b": "9f52f9af0e841c14e1ee52534ff1d67cadd099fa",
+    "kind": "declared",
+    "detail": "django trailer; same changed lines, applied to different surrounding code"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "9eb046e",
+  "title": "[6.1.x] Doc'd ContentType.model_class behaviour for stale content types.",
+  "commits": {
+   "main": [
+    "45ce894a3b333edb154abe660e40e76f1a35e141"
+   ],
+   "stable/6.1.x": [
+    "9eb046ee071d1140d42313154f6293e7700e9dac"
+   ]
+  },
+  "links": [
+   {
+    "a": "45ce894a3b333edb154abe660e40e76f1a35e141",
+    "b": "9eb046ee071d1140d42313154f6293e7700e9dac",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "45ce894a3b333edb154abe660e40e76f1a35e141",
+    "b": "9eb046ee071d1140d42313154f6293e7700e9dac",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "6feba4e",
+  "title": "[6.1.x] Fixed #36664 -- Doc'd Python 3.15 compatibility.",
+  "commits": {
+   "main": [
+    "c6ebf51871fa149e88f39ea44aaf700590366607"
+   ],
+   "stable/6.1.x": [
+    "6feba4e108a79ba1316083a90261bda53c285f96"
+   ]
+  },
+  "links": [
+   {
+    "a": "c6ebf51871fa149e88f39ea44aaf700590366607",
+    "b": "6feba4e108a79ba1316083a90261bda53c285f96",
+    "kind": "declared",
+    "detail": "django trailer; code was modified during backport"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": true
+  }
+ },
+ {
+  "id": "6762bd7",
+  "title": "[6.1.x] Fixed #37272 -- Documented the annual release cycle within the release process docs.",
+  "commits": {
+   "main": [
+    "11af25c0ae06c8275ebb8def8b8ca777a5660ed6"
+   ],
+   "stable/6.1.x": [
+    "6762bd7e709ad2f64b5a30dc27bd95dc862e8c68"
+   ]
+  },
+  "links": [
+   {
+    "a": "11af25c0ae06c8275ebb8def8b8ca777a5660ed6",
+    "b": "6762bd7e709ad2f64b5a30dc27bd95dc862e8c68",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "11af25c0ae06c8275ebb8def8b8ca777a5660ed6",
+    "b": "6762bd7e709ad2f64b5a30dc27bd95dc862e8c68",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "1e01021",
+  "title": "[6.1.x] Fixed #37397 -- Clarified DATA_UPLOAD_MAX_MEMORY_SIZE behavior on request.body vs request.POST.",
+  "commits": {
+   "main": [
+    "b33bab33709bbd74f4dfc376786ba0b3912c3f53"
+   ],
+   "stable/6.1.x": [
+    "1e01021325e7207a19c73f11150f545c749f07d8"
+   ]
+  },
+  "links": [
+   {
+    "a": "b33bab33709bbd74f4dfc376786ba0b3912c3f53",
+    "b": "1e01021325e7207a19c73f11150f545c749f07d8",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "b33bab33709bbd74f4dfc376786ba0b3912c3f53",
+    "b": "1e01021325e7207a19c73f11150f545c749f07d8",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "23c8249",
+  "title": "[6.1.x] Fixed #37411 -- Added compatibility for oracledb 26.0.0+.",
+  "commits": {
+   "main": [
+    "cf63ff2186852ee1aac4a802b0ff6a93f6e08891"
+   ],
+   "stable/6.1.x": [
+    "23c8249bc5a81f71f5aa0f36e9af627e89c026bd"
+   ]
+  },
+  "links": [
+   {
+    "a": "cf63ff2186852ee1aac4a802b0ff6a93f6e08891",
+    "b": "23c8249bc5a81f71f5aa0f36e9af627e89c026bd",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "cf63ff2186852ee1aac4a802b0ff6a93f6e08891",
+    "b": "23c8249bc5a81f71f5aa0f36e9af627e89c026bd",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "6a3b3ca",
+  "title": "[6.1.x] Fixed #37412, Refs #34041 -- Added backwards incompatible note for admin breadcrumb changes.",
+  "commits": {
+   "main": [
+    "38e2188cde2278131237fd2177b55ded3d515556"
+   ],
+   "stable/6.1.x": [
+    "6a3b3ca871026ffa5f46036ed9985aa3f61470f4"
+   ]
+  },
+  "links": [
+   {
+    "a": "38e2188cde2278131237fd2177b55ded3d515556",
+    "b": "6a3b3ca871026ffa5f46036ed9985aa3f61470f4",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "38e2188cde2278131237fd2177b55ded3d515556",
+    "b": "6a3b3ca871026ffa5f46036ed9985aa3f61470f4",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "7e8a8ea",
+  "title": "[6.1.x] Fixed #29504 -- Documented limitations of integer-like keys in JSONField.",
+  "commits": {
+   "main": [
+    "badbcf20e1a2894bf557d9cf0707367da4abfe41"
+   ],
+   "stable/6.1.x": [
+    "7e8a8ea033cd855ba33d98422c2499d1005bd8cb"
+   ]
+  },
+  "links": [
+   {
+    "a": "badbcf20e1a2894bf557d9cf0707367da4abfe41",
+    "b": "7e8a8ea033cd855ba33d98422c2499d1005bd8cb",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "badbcf20e1a2894bf557d9cf0707367da4abfe41",
+    "b": "7e8a8ea033cd855ba33d98422c2499d1005bd8cb",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "2c59287",
+  "title": "[6.1.x] Added follow-up to CVE-2026-15830 to security archive.",
+  "commits": {
+   "main": [
+    "904349fcbe0ad4eed097b5e7fb7171954591cb28"
+   ],
+   "stable/6.1.x": [
+    "2c59287a76735aa2718d601997aa89c2c06ce430"
+   ]
+  },
+  "links": [
+   {
+    "a": "904349fcbe0ad4eed097b5e7fb7171954591cb28",
+    "b": "2c59287a76735aa2718d601997aa89c2c06ce430",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "904349fcbe0ad4eed097b5e7fb7171954591cb28",
+    "b": "2c59287a76735aa2718d601997aa89c2c06ce430",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "0931d3c",
+  "title": "[6.1.x] Fixed #37403 -- Fixed JSONField __in crash on SQLite with Value(None) expressions.",
+  "commits": {
+   "main": [
+    "1b4d021b6525bff6439b9d3b8d5388a1a1906ecd"
+   ],
+   "stable/6.1.x": [
+    "0931d3c35213b9b9562f0585629745bad89f5d9b"
+   ]
+  },
+  "links": [
+   {
+    "a": "1b4d021b6525bff6439b9d3b8d5388a1a1906ecd",
+    "b": "0931d3c35213b9b9562f0585629745bad89f5d9b",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "1b4d021b6525bff6439b9d3b8d5388a1a1906ecd",
+    "b": "0931d3c35213b9b9562f0585629745bad89f5d9b",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "04f978e",
+  "title": "[6.1.x] Refs #37065 -- Added missing await in method_decorator example.",
+  "commits": {
+   "main": [
+    "cf564bf3a7e0d92bc32292ccff1eca5aeb24b1ef"
+   ],
+   "stable/6.1.x": [
+    "04f978e40701dc6aaf47a37cac8cea599fd16911"
+   ]
+  },
+  "links": [
+   {
+    "a": "cf564bf3a7e0d92bc32292ccff1eca5aeb24b1ef",
+    "b": "04f978e40701dc6aaf47a37cac8cea599fd16911",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "cf564bf3a7e0d92bc32292ccff1eca5aeb24b1ef",
+    "b": "04f978e40701dc6aaf47a37cac8cea599fd16911",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "bc1f112",
+  "title": "[6.1.x] Fixed #37405 -- Fixed crash if sort_keys option is used with YAML serializer.",
+  "commits": {
+   "main": [
+    "a269574f1bcf4716502b9ba8c3492abf15dc93eb"
+   ],
+   "stable/6.1.x": [
+    "bc1f112b2de5256e0cb8211fb2330ab6efaf9344"
+   ]
+  },
+  "links": [
+   {
+    "a": "a269574f1bcf4716502b9ba8c3492abf15dc93eb",
+    "b": "bc1f112b2de5256e0cb8211fb2330ab6efaf9344",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "a269574f1bcf4716502b9ba8c3492abf15dc93eb",
+    "b": "bc1f112b2de5256e0cb8211fb2330ab6efaf9344",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "75856a7",
+  "title": "[6.1.x] Added trailing newline to 6.1.3.txt.",
+  "commits": {
+   "main": [
+    "8c34887b1ad8bb3ec61c6e713442dab3c643d557"
+   ],
+   "stable/6.1.x": [
+    "75856a70b0f48183eb2d9ce299aeeb0fd87db1c1"
+   ]
+  },
+  "links": [
+   {
+    "a": "8c34887b1ad8bb3ec61c6e713442dab3c643d557",
+    "b": "75856a70b0f48183eb2d9ce299aeeb0fd87db1c1",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "8c34887b1ad8bb3ec61c6e713442dab3c643d557",
+    "b": "75856a70b0f48183eb2d9ce299aeeb0fd87db1c1",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "cbf5477",
+  "title": "[6.1.x] Removed reference to 6.0.8 from 6.1.2 and 5.2.18 release notes.",
+  "commits": {
+   "main": [
+    "2bc761b01b55f8464cbd41e5189a04f2750f04fb"
+   ],
+   "stable/6.1.x": [
+    "cbf54776865a0b630339318a6fb58cdcf35c630d"
+   ]
+  },
+  "links": [
+   {
+    "a": "2bc761b01b55f8464cbd41e5189a04f2750f04fb",
+    "b": "cbf54776865a0b630339318a6fb58cdcf35c630d",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "2bc761b01b55f8464cbd41e5189a04f2750f04fb",
+    "b": "cbf54776865a0b630339318a6fb58cdcf35c630d",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "152271b",
+  "title": "[6.1.x] Added CVE-2026-77050, CVE-2026-84429, CVE-2026-87890, and CVE-2026-87975 to security archive.",
+  "commits": {
+   "main": [
+    "3b7ae042cef02a09caab70ba54077a6f4cffac80"
+   ],
+   "stable/6.1.x": [
+    "152271b3d827362e02d97dc478b07960c9877a28"
+   ]
+  },
+  "links": [
+   {
+    "a": "3b7ae042cef02a09caab70ba54077a6f4cffac80",
+    "b": "152271b3d827362e02d97dc478b07960c9877a28",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "3b7ae042cef02a09caab70ba54077a6f4cffac80",
+    "b": "152271b3d827362e02d97dc478b07960c9877a28",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "b4e1f5a",
+  "title": "[6.1.x] Added stub release notes for 6.1.3.",
+  "commits": {
+   "main": [
+    "4c5b1d84f42e88f1450fd2efa7679300a826db0d"
+   ],
+   "stable/6.1.x": [
+    "b4e1f5a3e8de1109f9e2487129acccb43d884e0c"
+   ]
+  },
+  "links": [
+   {
+    "a": "4c5b1d84f42e88f1450fd2efa7679300a826db0d",
+    "b": "b4e1f5a3e8de1109f9e2487129acccb43d884e0c",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "4c5b1d84f42e88f1450fd2efa7679300a826db0d",
+    "b": "b4e1f5a3e8de1109f9e2487129acccb43d884e0c",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "75d401a",
+  "title": "[6.1.x] Refs CVE-2026-15830 -- Fixed WKB geometry collection limit bypasses.",
+  "commits": {
+   "main": [
+    "62ef9d40cf4ea75f16518436b44b8ab2515340df"
+   ],
+   "stable/6.1.x": [
+    "75d401a1491e04a907ed745c128836d51c982c0f"
+   ]
+  },
+  "links": [
+   {
+    "a": "62ef9d40cf4ea75f16518436b44b8ab2515340df",
+    "b": "75d401a1491e04a907ed745c128836d51c982c0f",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "62ef9d40cf4ea75f16518436b44b8ab2515340df",
+    "b": "75d401a1491e04a907ed745c128836d51c982c0f",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "cce6c57",
+  "title": "[6.1.x] Fixed CVE-2026-87975 -- Prevented forging actions in model formsets with editable PKs.",
+  "commits": {
+   "main": [
+    "83cbd21be57483e6b3eb6e4688a561c841aff75e"
+   ],
+   "stable/6.1.x": [
+    "cce6c57ed30ea83725f9d6abb2fe5ee932bab107"
+   ]
+  },
+  "links": [
+   {
+    "a": "83cbd21be57483e6b3eb6e4688a561c841aff75e",
+    "b": "cce6c57ed30ea83725f9d6abb2fe5ee932bab107",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "83cbd21be57483e6b3eb6e4688a561c841aff75e",
+    "b": "cce6c57ed30ea83725f9d6abb2fe5ee932bab107",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "4e77ef1",
+  "title": "[6.1.x] Fixed CVE-2026-87890 -- Blocked bytes in spatial lookups.",
+  "commits": {
+   "main": [
+    "ebcb13b327301f28cbc6cd5e4988a719f00575aa"
+   ],
+   "stable/6.1.x": [
+    "4e77ef1e69c94780006b82795aa7db101996c3af"
+   ]
+  },
+  "links": [
+   {
+    "a": "ebcb13b327301f28cbc6cd5e4988a719f00575aa",
+    "b": "4e77ef1e69c94780006b82795aa7db101996c3af",
+    "kind": "declared",
+    "detail": "django trailer; code was modified during backport"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": true
+  }
+ },
+ {
+  "id": "de56dee",
+  "title": "[6.1.x] Fixed CVE-2026-84429 -- Simplified parse_header_parameters by leveraging stdlib's Message.",
+  "commits": {
+   "main": [
+    "7ff7fcc0508864a4bc39693128ace38b1e95a890"
+   ],
+   "stable/6.1.x": [
+    "de56deeabd4c48dfb5193f0001469d80102fb367"
+   ]
+  },
+  "links": [
+   {
+    "a": "7ff7fcc0508864a4bc39693128ace38b1e95a890",
+    "b": "de56deeabd4c48dfb5193f0001469d80102fb367",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "7ff7fcc0508864a4bc39693128ace38b1e95a890",
+    "b": "de56deeabd4c48dfb5193f0001469d80102fb367",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "7e878b0",
+  "title": "[6.1.x] Fixed CVE-2026-77050 -- Prevented memory exhaustion in get_supported_language_variant().",
+  "commits": {
+   "main": [
+    "c88b304cc2d90fc37d3bd1f5f3829706fa6c13bc"
+   ],
+   "stable/6.1.x": [
+    "7e878b0f8bd42260903e6a0d38996a93b0474a0b"
+   ]
+  },
+  "links": [
+   {
+    "a": "c88b304cc2d90fc37d3bd1f5f3829706fa6c13bc",
+    "b": "7e878b0f8bd42260903e6a0d38996a93b0474a0b",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "c88b304cc2d90fc37d3bd1f5f3829706fa6c13bc",
+    "b": "7e878b0f8bd42260903e6a0d38996a93b0474a0b",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "d8cf296",
+  "title": "[6.1.x] Fixed #37322 -- Avoided transforms on spatial fields with srid=None.",
+  "commits": {
+   "main": [
+    "08e4c0d8e7db6343567e7b02e25da8ea2226a7e0"
+   ],
+   "stable/6.1.x": [
+    "d8cf296d9668e146067337c6f2259be6ea2c7370"
+   ]
+  },
+  "links": [
+   {
+    "a": "08e4c0d8e7db6343567e7b02e25da8ea2226a7e0",
+    "b": "d8cf296d9668e146067337c6f2259be6ea2c7370",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "08e4c0d8e7db6343567e7b02e25da8ea2226a7e0",
+    "b": "d8cf296d9668e146067337c6f2259be6ea2c7370",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "71084d6",
+  "title": "[6.1.x] Fixed #37377 -- Fixed JSONField __in crash/wrong result for Value() primitives.",
+  "commits": {
+   "main": [
+    "fabce94374e166e80e2643db8b85d1e3442427bf"
+   ],
+   "stable/6.1.x": [
+    "71084d68d3be55307be6698a7cff93244f98ad88"
+   ]
+  },
+  "links": [
+   {
+    "a": "fabce94374e166e80e2643db8b85d1e3442427bf",
+    "b": "71084d68d3be55307be6698a7cff93244f98ad88",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "fabce94374e166e80e2643db8b85d1e3442427bf",
+    "b": "71084d68d3be55307be6698a7cff93244f98ad88",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "e34d776",
+  "title": "[6.1.x] Fixed #37386 -- Observed delete_confirmation_max_display=0 for inlines.",
+  "commits": {
+   "main": [
+    "7d94ee295df9b2503135158a7f2b55fb686785fc"
+   ],
+   "stable/6.1.x": [
+    "e34d77639cebc30b13bbbb82b04f97ba0da82cb4"
+   ]
+  },
+  "links": [
+   {
+    "a": "7d94ee295df9b2503135158a7f2b55fb686785fc",
+    "b": "e34d77639cebc30b13bbbb82b04f97ba0da82cb4",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "7d94ee295df9b2503135158a7f2b55fb686785fc",
+    "b": "e34d77639cebc30b13bbbb82b04f97ba0da82cb4",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "25872ef",
+  "title": "[6.1.x] Fixed #37361 -- Fixed permission renames for chained RenameModel operations.",
+  "commits": {
+   "main": [
+    "7847227a3fecde4b2a169552b84c60c6286b6025"
+   ],
+   "stable/6.1.x": [
+    "25872ef34ee19f49887509138218fc08320f526c"
+   ]
+  },
+  "links": [
+   {
+    "a": "7847227a3fecde4b2a169552b84c60c6286b6025",
+    "b": "25872ef34ee19f49887509138218fc08320f526c",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "7847227a3fecde4b2a169552b84c60c6286b6025",
+    "b": "25872ef34ee19f49887509138218fc08320f526c",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "d21284a",
+  "title": "[6.1.x] Fixed #37376 -- Made UUID4() persist data in lowercase on Oracle.",
+  "commits": {
+   "main": [
+    "3db0898eee4061d44de5052953ef0fe3afb5951f"
+   ],
+   "stable/6.1.x": [
+    "d21284a698b55d646cbcd37edcfbbeefc6ebe085"
+   ]
+  },
+  "links": [
+   {
+    "a": "3db0898eee4061d44de5052953ef0fe3afb5951f",
+    "b": "d21284a698b55d646cbcd37edcfbbeefc6ebe085",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "3db0898eee4061d44de5052953ef0fe3afb5951f",
+    "b": "d21284a698b55d646cbcd37edcfbbeefc6ebe085",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "5b823d7",
+  "title": "[6.1.x] Refs #37140 -- Limited NULL handling warning for __in lookups to subqueries.",
+  "commits": {
+   "main": [
+    "55c2d202a6e68d40c649f9b27aed11494898628d"
+   ],
+   "stable/6.1.x": [
+    "5b823d764b9d0e0e10c7cf79c33ef468710b8821"
+   ]
+  },
+  "links": [
+   {
+    "a": "55c2d202a6e68d40c649f9b27aed11494898628d",
+    "b": "5b823d764b9d0e0e10c7cf79c33ef468710b8821",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "55c2d202a6e68d40c649f9b27aed11494898628d",
+    "b": "5b823d764b9d0e0e10c7cf79c33ef468710b8821",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "8dbd89a",
+  "title": "[6.1.x] Fixed #37381 -- Corrected execute_wrapper() module reference in docs.",
+  "commits": {
+   "main": [
+    "0ae93a02e55ec42dfde251fc5500b3ec617a4200"
+   ],
+   "stable/6.1.x": [
+    "8dbd89a697769b6b5eeeccfbc631ff57de750e78"
+   ]
+  },
+  "links": [
+   {
+    "a": "0ae93a02e55ec42dfde251fc5500b3ec617a4200",
+    "b": "8dbd89a697769b6b5eeeccfbc631ff57de750e78",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "0ae93a02e55ec42dfde251fc5500b3ec617a4200",
+    "b": "8dbd89a697769b6b5eeeccfbc631ff57de750e78",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "8590dfd",
+  "title": "[6.1.x] Fixed #37291 -- Prevented tuple lookups from hanging on F() expressions.",
+  "commits": {
+   "main": [
+    "50eef95591b1e5d8c47b2e8c96066cb0c516753a"
+   ],
+   "stable/6.1.x": [
+    "8590dfdb4132ab56a9a26c13094e01f2d2a74ee6"
+   ]
+  },
+  "links": [
+   {
+    "a": "50eef95591b1e5d8c47b2e8c96066cb0c516753a",
+    "b": "8590dfdb4132ab56a9a26c13094e01f2d2a74ee6",
+    "kind": "declared",
+    "detail": "django trailer; same changed lines, applied to different surrounding code"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "c9f6dfb",
+  "title": "[6.1.x] Fixed #37378 -- Removed extra empty breadcrumb in admindocs model index.",
+  "commits": {
+   "main": [
+    "479ba6d2812bb0613d1646d445be43f7c6ab7bc7"
+   ],
+   "stable/6.1.x": [
+    "c9f6dfb5d17ba5cfe41868bf97179c73d93d89db"
+   ]
+  },
+  "links": [
+   {
+    "a": "479ba6d2812bb0613d1646d445be43f7c6ab7bc7",
+    "b": "c9f6dfb5d17ba5cfe41868bf97179c73d93d89db",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "479ba6d2812bb0613d1646d445be43f7c6ab7bc7",
+    "b": "c9f6dfb5d17ba5cfe41868bf97179c73d93d89db",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "f91fa45",
+  "title": "[6.1.x] Confirmed release date for 6.1.2, 6.0.9, and 5.2.18.",
+  "commits": {
+   "main": [
+    "5a4511adb247a44a1cada11fe4763abba0a42663"
+   ],
+   "stable/6.1.x": [
+    "f91fa450de552e92925286763479308c1c5b681b"
+   ]
+  },
+  "links": [
+   {
+    "a": "5a4511adb247a44a1cada11fe4763abba0a42663",
+    "b": "f91fa450de552e92925286763479308c1c5b681b",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "5a4511adb247a44a1cada11fe4763abba0a42663",
+    "b": "f91fa450de552e92925286763479308c1c5b681b",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "2726a64",
+  "title": "[6.1.x] Fixed typo in docs/releases/6.1.2.txt.",
+  "commits": {
+   "main": [
+    "4fab678a0739d54401ccee7eb587553657c9f76e"
+   ],
+   "stable/6.1.x": [
+    "2726a64c353f29b024e1579edee9b52e5b59e3a8"
+   ]
+  },
+  "links": [
+   {
+    "a": "4fab678a0739d54401ccee7eb587553657c9f76e",
+    "b": "2726a64c353f29b024e1579edee9b52e5b59e3a8",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "4fab678a0739d54401ccee7eb587553657c9f76e",
+    "b": "2726a64c353f29b024e1579edee9b52e5b59e3a8",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "2500be3",
+  "title": "[6.1.x] Added missing notes about including latest translations in 6.0.4 and 6.0.6.",
+  "commits": {
+   "main": [
+    "951d13c77bc120be385c46fc701a1ad93694edd1"
+   ],
+   "stable/6.1.x": [
+    "2500be369a39bdd15da4a5486ecf16bce67b451c"
+   ]
+  },
+  "links": [
+   {
+    "a": "951d13c77bc120be385c46fc701a1ad93694edd1",
+    "b": "2500be369a39bdd15da4a5486ecf16bce67b451c",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "951d13c77bc120be385c46fc701a1ad93694edd1",
+    "b": "2500be369a39bdd15da4a5486ecf16bce67b451c",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "d30cfb6",
+  "title": "[6.1.x] Corrected output of Prefetch.to_attr example.",
+  "commits": {
+   "main": [
+    "dd6f6b1531984823e3dc56740dfa93f3ceb09357"
+   ],
+   "stable/6.1.x": [
+    "d30cfb600b83f8f55b1cfe4ea0cd7e5836ddfc3b"
+   ]
+  },
+  "links": [
+   {
+    "a": "dd6f6b1531984823e3dc56740dfa93f3ceb09357",
+    "b": "d30cfb600b83f8f55b1cfe4ea0cd7e5836ddfc3b",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "dd6f6b1531984823e3dc56740dfa93f3ceb09357",
+    "b": "d30cfb600b83f8f55b1cfe4ea0cd7e5836ddfc3b",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "b8f300c",
+  "title": "[6.1.x] Fixed #37321 -- Documented BaseSpatialField.srid=-1 behavior.",
+  "commits": {
+   "main": [
+    "85647bccc19947646f5b382808415acf623e964d"
+   ],
+   "stable/6.1.x": [
+    "b8f300c82f5f21405499821d30d526cb27587531"
+   ]
+  },
+  "links": [
+   {
+    "a": "85647bccc19947646f5b382808415acf623e964d",
+    "b": "b8f300c82f5f21405499821d30d526cb27587531",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "85647bccc19947646f5b382808415acf623e964d",
+    "b": "b8f300c82f5f21405499821d30d526cb27587531",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "64c6e09",
+  "title": "[6.1.x] Fixed #37344 -- Enabled FETCH_PEERS batching for instances loaded by select_related.",
+  "commits": {
+   "main": [
+    "6ade6258480fba84a7e895b4b1e1716dfc954778"
+   ],
+   "stable/6.1.x": [
+    "64c6e09b1efb5032f74c483476b8bf3f7d4920b3"
+   ]
+  },
+  "links": [
+   {
+    "a": "6ade6258480fba84a7e895b4b1e1716dfc954778",
+    "b": "64c6e09b1efb5032f74c483476b8bf3f7d4920b3",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "6ade6258480fba84a7e895b4b1e1716dfc954778",
+    "b": "64c6e09b1efb5032f74c483476b8bf3f7d4920b3",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "c140037",
+  "title": "[6.1.x] Fixed #37140 -- Documented NULL handling of __in lookups.",
+  "commits": {
+   "main": [
+    "376909dc434395ae0156ac74e998d828e9551989"
+   ],
+   "stable/6.1.x": [
+    "c14003755fe60b2bdd1f56a892a49eb0fdf8d06a"
+   ]
+  },
+  "links": [
+   {
+    "a": "376909dc434395ae0156ac74e998d828e9551989",
+    "b": "c14003755fe60b2bdd1f56a892a49eb0fdf8d06a",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "376909dc434395ae0156ac74e998d828e9551989",
+    "b": "c14003755fe60b2bdd1f56a892a49eb0fdf8d06a",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "47ee9d0",
+  "title": "[6.1.x] Refs #37348 -- Added test for excluding on a nullable GeneratedField.",
+  "commits": {
+   "main": [
+    "2abf9d2cf8602f0ddc0db4ec1a33769b41b4232a"
+   ],
+   "stable/6.1.x": [
+    "47ee9d03094bc8ad4964e584c72908d26085f3b5"
+   ]
+  },
+  "links": [
+   {
+    "a": "2abf9d2cf8602f0ddc0db4ec1a33769b41b4232a",
+    "b": "47ee9d03094bc8ad4964e584c72908d26085f3b5",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "2abf9d2cf8602f0ddc0db4ec1a33769b41b4232a",
+    "b": "47ee9d03094bc8ad4964e584c72908d26085f3b5",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "d8b332c",
+  "title": "[6.1.x] Fixed #37348 -- Reverted \"Fixed #36806 -- Added system check for null kwarg in GeneratedField.\".",
+  "commits": {
+   "main": [
+    "fb32a564ccc6f91d4b7594f5707c62fab0c11c04"
+   ],
+   "stable/6.1.x": [
+    "d8b332caf17e79da2a9fa3823a2b6e85063dad94"
+   ]
+  },
+  "links": [
+   {
+    "a": "fb32a564ccc6f91d4b7594f5707c62fab0c11c04",
+    "b": "d8b332caf17e79da2a9fa3823a2b6e85063dad94",
+    "kind": "declared",
+    "detail": "django trailer; same changed lines, applied to different surrounding code"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "2131ee9",
+  "title": "[6.1.x] Refs #37348 -- Reverted \"Refs #36806 -- Removed unnecessary null=True from GeneratedField in test models.\".",
+  "commits": {
+   "main": [
+    "e7f464ecdc025000899067ceb6bc61116ca81996"
+   ],
+   "stable/6.1.x": [
+    "2131ee9f198f9f966877db7a5649b4fb93c6bf6e"
+   ]
+  },
+  "links": [
+   {
+    "a": "e7f464ecdc025000899067ceb6bc61116ca81996",
+    "b": "2131ee9f198f9f966877db7a5649b4fb93c6bf6e",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "e7f464ecdc025000899067ceb6bc61116ca81996",
+    "b": "2131ee9f198f9f966877db7a5649b4fb93c6bf6e",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "3107ba9",
+  "title": "[6.1.x] Fixed #37261 -- Documented error reporting migration to MAILERS.",
+  "commits": {
+   "main": [
+    "bbf5a998c02b52f1b72474e4b310cff94f24ff36"
+   ],
+   "stable/6.1.x": [
+    "3107ba9b4514f4962ef95f8b03e5103c92872d70"
+   ]
+  },
+  "links": [
+   {
+    "a": "bbf5a998c02b52f1b72474e4b310cff94f24ff36",
+    "b": "3107ba9b4514f4962ef95f8b03e5103c92872d70",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "bbf5a998c02b52f1b72474e4b310cff94f24ff36",
+    "b": "3107ba9b4514f4962ef95f8b03e5103c92872d70",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "db3f36b",
+  "title": "[6.1.x] Fixed #37283 -- Clarified PostgreSQL connection pooling configuration.",
+  "commits": {
+   "main": [
+    "516d06e48fb5a4e7deb055ef578fa1272e86d326"
+   ],
+   "stable/6.1.x": [
+    "db3f36b41894dcdd7b368a996e83e6ab7233c5e4"
+   ]
+  },
+  "links": [
+   {
+    "a": "516d06e48fb5a4e7deb055ef578fa1272e86d326",
+    "b": "db3f36b41894dcdd7b368a996e83e6ab7233c5e4",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "516d06e48fb5a4e7deb055ef578fa1272e86d326",
+    "b": "db3f36b41894dcdd7b368a996e83e6ab7233c5e4",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ },
+ {
+  "id": "7e11264",
+  "title": "[6.1.x] Fixed #37289 -- Avoided deleting network rasters.",
+  "commits": {
+   "main": [
+    "fc4eaaabf419508ea39d750ca5ca801d933e0b16"
+   ],
+   "stable/6.1.x": [
+    "7e11264044ca15005a2fe387d411d22b081c5982"
+   ]
+  },
+  "links": [
+   {
+    "a": "fc4eaaabf419508ea39d750ca5ca801d933e0b16",
+    "b": "7e11264044ca15005a2fe387d411d22b081c5982",
+    "kind": "exact",
+    "detail": "same patch-id"
+   },
+   {
+    "a": "fc4eaaabf419508ea39d750ca5ca801d933e0b16",
+    "b": "7e11264044ca15005a2fe387d411d22b081c5982",
+    "kind": "declared",
+    "detail": "django trailer"
+   }
+  ],
+  "status": {
+   "level": "UNKNOWN",
+   "reason": "no provenance metadata in this clone (fetch refs/notes/provenance)",
+   "evidence_sha": null,
+   "partial": false
+  }
+ }
+]
