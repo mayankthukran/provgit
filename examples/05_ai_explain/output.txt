@@ -1,47 +1,49 @@
-# Real run, not edited: qwen2.5-coder:7b (digest dae161e27b0e90dd185) · Ollama 0.40.3 · Apple M3, 8 GB RAM · 2026-11-01
-# The 14b model did not answer within 300 s on this 8 GB laptop (see output_14b_timeout.txt);
-# 7b is the documented option for 8 GB machines. Wording may differ on other machines; the verdict will not.
-# Note: the model's "Risk" line swaps the two risks (lowering the timeout is what risks outages).
-# This is why AI output is labelled 'not tested' and can never change provgit's verdict.
+# Real run, not edited: qwen2.5-coder:7b (digest dae161e27b0e90dd185) · Ollama 0.40.3 · Apple M3, 8 GB RAM
+# · 2026-11-01 · 42.4 s (model loaded from cold). Lines below are exactly what input.sh printed.
+# This run has no visible mistake; its Risk line stays vague. An earlier run made a real mistake
+# (swapped the two risks): see output_earlier_run.txt. 14b timed out on this laptop: output_14b_timeout.txt.
+# Wording may differ on other machines; provgit's verdict above the AI block will not.
 
-$ PROVGIT_MODEL=qwen2.5-coder:7b provgit ai-check
+$ provgit ai-check
 Ollama   ✅ http://127.0.0.1:11434 (version 0.40.3)
 Model    ✅ qwen2.5-coder:7b  dae161e27b0e90dd185
 Format   ✅ JSON schema
 Network  ✅ local only, proxy settings ignored
 
-$ PROVGIT_MODEL=qwen2.5-coder:7b provgit explain DEV --into UAT --prod PROD -C demo-repo
+$ provgit explain DEV --into UAT --prod PROD -C demo-repo
 🤖 explaining 1/1 settings.py …
-🤖 done in 27.1s
+🤖 done in 42.4s
 ⚠️  1 conflict: DEV → UAT
 
 settings.py  (Side A line 2, Side B line 2)
   Side A (UAT):
      | TIMEOUT = 30  # stop prod outage
-     from 91ff3e9 "Hotfix #812: raise timeout to stop prod outage"   [PROD=f354190  UAT=91ff3e9]
-     🟢 PROD_VERIFIED — CI passed on f354190 and change is in PROD
+     from 68eb381 "Hotfix #812: raise timeout to stop prod outage"   [PROD=ac61d22  UAT=68eb381]
+     🟢 PROD_VERIFIED — CI passed on ac61d22 and change is in PROD
   Side B (DEV):
      | TIMEOUT = 5  # shorter jobs
-     from d50aa86 "PR #845: lower timeout for faster batch jobs"   [DEV=d50aa86]
+     from 3f0667e "PR #845: lower timeout for faster batch jobs"   [DEV=3f0667e]
      🔴 UNTESTED — no CI record for any copy of this change
   → Keep Side A (UAT): it is PROD_VERIFIED. Side B (DEV) is UNTESTED; test it before taking it.
 
 ⚠️  Tested alone ≠ tested together. 2 incoming change(s) from DEV are not tested:
-   🔴 7625d86 PR #830: log retry attempts — UNTESTED
-   🔴 d50aa86 PR #845: lower timeout for faster batch jobs — UNTESTED
+   🔴 ca108b0 PR #830: log retry attempts — UNTESTED
+   🔴 3f0667e PR #845: lower timeout for faster batch jobs — UNTESTED
 
 🤖 AI explanations
 
 Conflict 1: settings.py (Side A line 2, Side B line 2)
   ┌ 🤖 AI draft — qwen2.5-coder:7b — not tested · explains only, does not change the verdict above
-  │ Side A: Side A (UAT) increases the timeout to 30 seconds to prevent production outages.
-  │   This is a hotfix addressing a critical issue.
-  │ Side B: Side B (DEV) decreases the timeout to 5 seconds to speed up batch jobs. This is
-  │   part of a PR to improve job processing efficiency.
-  │ Why they conflict: Both sides are attempting to change the `TIMEOUT` value, leading to a
-  │   conflict. Side A prioritizes production stability, while Side B aims for operational
-  │   efficiency.
-  │ Risk: Keeping either side alone could lead to either production outages or slower job
-  │   processing. Side A risks downtime, while Side B risks increased job processing time.
+  │ Side A: Side A increases the timeout to 30 seconds to prevent production outages. This
+  │   is a hotfix applied to the UAT branch.
+  │ Side B: Side B decreases the timeout to 5 seconds to speed up batch jobs. This change is
+  │   part of a PR on the DEV branch.
+  │ Why they conflict: Both sides attempt to modify the same line in the settings.py file,
+  │   leading to a conflict. Side A and Side B have different intentions for the timeout
+  │   value.
+  │ Risk: Keeping either side alone could result in either production outages or slower
+  │   batch jobs, depending on which side is chosen.
   │ No combined resolution proposed.
-  └ qwen2.5-coder:7b dae161e27b0e90dd185 · Ollama 0.40.3 · 27.1s
+  └ qwen2.5-coder:7b dae161e27b0e90dd185 · Ollama 0.40.3 · 42.4s
+(exit code 1)
+

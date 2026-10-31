@@ -1,0 +1,49 @@
+# Earlier real run (before demo SHAs were fixed, so its SHAs differ from the other examples).
+# Kept because it shows a real model mistake: the "Risk" line swaps the two risks.
+# Real run, not edited: qwen2.5-coder:7b (digest dae161e27b0e90dd185) · Ollama 0.40.3 · Apple M3, 8 GB RAM · 2026-11-01
+# The 14b model did not answer within 300 s on this 8 GB laptop (see output_14b_timeout.txt);
+# 7b is the documented option for 8 GB machines. Wording may differ on other machines; the verdict will not.
+# Note: the model's "Risk" line swaps the two risks (lowering the timeout is what risks outages).
+# This is why AI output is labelled 'not tested' and can never change provgit's verdict.
+
+$ PROVGIT_MODEL=qwen2.5-coder:7b provgit ai-check
+Ollama   ✅ http://127.0.0.1:11434 (version 0.40.3)
+Model    ✅ qwen2.5-coder:7b  dae161e27b0e90dd185
+Format   ✅ JSON schema
+Network  ✅ local only, proxy settings ignored
+
+$ PROVGIT_MODEL=qwen2.5-coder:7b provgit explain DEV --into UAT --prod PROD -C demo-repo
+🤖 explaining 1/1 settings.py …
+🤖 done in 27.1s
+⚠️  1 conflict: DEV → UAT
+
+settings.py  (Side A line 2, Side B line 2)
+  Side A (UAT):
+     | TIMEOUT = 30  # stop prod outage
+     from 91ff3e9 "Hotfix #812: raise timeout to stop prod outage"   [PROD=f354190  UAT=91ff3e9]
+     🟢 PROD_VERIFIED — CI passed on f354190 and change is in PROD
+  Side B (DEV):
+     | TIMEOUT = 5  # shorter jobs
+     from d50aa86 "PR #845: lower timeout for faster batch jobs"   [DEV=d50aa86]
+     🔴 UNTESTED — no CI record for any copy of this change
+  → Keep Side A (UAT): it is PROD_VERIFIED. Side B (DEV) is UNTESTED; test it before taking it.
+
+⚠️  Tested alone ≠ tested together. 2 incoming change(s) from DEV are not tested:
+   🔴 7625d86 PR #830: log retry attempts — UNTESTED
+   🔴 d50aa86 PR #845: lower timeout for faster batch jobs — UNTESTED
+
+🤖 AI explanations
+
+Conflict 1: settings.py (Side A line 2, Side B line 2)
+  ┌ 🤖 AI draft — qwen2.5-coder:7b — not tested · explains only, does not change the verdict above
+  │ Side A: Side A (UAT) increases the timeout to 30 seconds to prevent production outages.
+  │   This is a hotfix addressing a critical issue.
+  │ Side B: Side B (DEV) decreases the timeout to 5 seconds to speed up batch jobs. This is
+  │   part of a PR to improve job processing efficiency.
+  │ Why they conflict: Both sides are attempting to change the `TIMEOUT` value, leading to a
+  │   conflict. Side A prioritizes production stability, while Side B aims for operational
+  │   efficiency.
+  │ Risk: Keeping either side alone could lead to either production outages or slower job
+  │   processing. Side A risks downtime, while Side B risks increased job processing time.
+  │ No combined resolution proposed.
+  └ qwen2.5-coder:7b dae161e27b0e90dd185 · Ollama 0.40.3 · 27.1s
