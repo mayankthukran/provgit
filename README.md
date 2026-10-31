@@ -18,8 +18,8 @@ Teams keep long-lived branches (DEV → UAT → PROD). Hotfixes are made on PROD
 | Store and share testing provenance with git notes; inherit it across copies of a change | ✅ |
 | Report UNKNOWN (never "tested") when a clone has no provenance metadata | ✅ |
 | Commit trailers on the final merge commit | 🚧 |
-| Predict conflicts with a dry-run merge (`git merge-tree --write-tree`) | 🚧 |
-| Show each conflict side's origin and test status | 🚧 |
+| Predict conflicts with a dry-run merge (`git merge-tree --write-tree`) | ✅ |
+| Show each conflict side's origin (`git blame`), test status and a recommendation | ✅ |
 | Write a standard Git merge commit with provenance trailers | 🚧 |
 | Plain-English conflict explanations from a local open-weight model (Ollama) | 🚧 |
 
@@ -54,8 +54,20 @@ provgit track PROD UAT DEV --prod PROD -C demo-repo       # every change, its co
 provgit import-ci demo-repo/ci_results.json -C demo-repo  # load CI results into git notes
 provgit record <sha> --ci passed --env prod               # record one CI result by hand
 provgit status <sha> --branches PROD UAT DEV --prod PROD  # status of one commit, inherited from its copies
+provgit predict DEV --into UAT --prod PROD -C demo-repo   # dry-run merge: each conflict, its origin, tested or not
 provgit show <sha>                                        # patch-id + backport references of a commit
 ```
+
+### Predicting conflicts
+
+`provgit predict DEV --into UAT` merges in memory with `git merge-tree --write-tree`, so the working folder, index and branches do not change. For each conflict hunk it:
+
+1. finds the commits that wrote each side with `git blame` on that side's branch;
+2. maps each commit to its logical change, so a UAT backport inherits the CI result of the PROD hotfix it was copied from;
+3. recommends a side: keep the tested one, or, when both passed CI separately, run CI on the combined result;
+4. warns when a side is a backport whose code was edited during conflict resolution.
+
+Even for a clean merge it lists the incoming changes that were never tested: *tested alone ≠ tested together*. It exits 1 when there are conflicts, so it can be used as a CI gate. `--json` gives machine-readable output.
 
 ### Trust levels
 
