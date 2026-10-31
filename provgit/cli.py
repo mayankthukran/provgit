@@ -10,6 +10,7 @@ from . import __version__
 from . import provenance as prov
 from .gitutil import GitError, commit_message, parse_backport_refs, patch_id
 from .matcher import change_of, track
+from .predictor import predict
 
 ICON = {
     prov.PROD_VERIFIED: "🟢",
@@ -86,6 +87,46 @@ def _cmd_status(args) -> int:
     return 0
 
 
+def _cmd_predict(args) -> int:
+    rep = predict(args.source, args.into, prod=args.prod, cwd=args.repo, limit=args.limit)
+    if args.json:
+        print(json.dumps(rep.to_dict(), indent=2))
+        return 1 if rep.conflicts else 0
+
+    if rep.clean:
+        print(f"✅ No conflicts: {rep.source} → {rep.into} merges cleanly.")
+    else:
+        n = len(rep.conflicts)
+        print(f"⚠️  {n} conflict{'s' if n > 1 else ''}: {rep.source} → {rep.into}")
+    for c in rep.conflicts:
+        print()
+        if c.a.lines or c.b.lines:
+            print(f"{c.path}  (Side A line {c.a.start}, Side B line {c.b.start})")
+        else:
+            print(f"{c.path}  (whole-file conflict)")
+        for label, s in (("A", c.a), ("B", c.b)):
+            print(f"  Side {label} ({s.branch}):")
+            for line in s.lines or ["(no lines: deleted or whole file)"]:
+                print(f"     | {line}")
+            for o in s.origins:
+                copies = "  ".join(f"{br}={','.join(x[:7] for x in shas)}"
+                                   for br, shas in o.copies.items())
+                print(f"     from {o.sha[:7]} \"{o.title}\"   [{copies}]")
+                print(f"     {ICON[o.level]} {o.level} — {o.reason}")
+        print(f"  → {c.recommendation}")
+
+    if rep.untested_incoming:
+        print()
+        print(f"⚠️  Tested alone ≠ tested together. {len(rep.untested_incoming)} incoming "
+              f"change(s) from {rep.source} are not tested:")
+        for o in rep.untested_incoming:
+            print(f"   {ICON[o.level]} {o.sha[:7]} {o.title} — {o.level}")
+    elif rep.clean:
+        print("   Every incoming change passed CI on its own, but not together: "
+              "run CI on the merge result.")
+    return 1 if rep.conflicts else 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="provgit", description="Git conflict resolution with testing provenance.")
     parser.add_argument("--version", action="version", version=f"provgit {__version__}")
@@ -124,6 +165,15 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--limit", type=int, default=500)
     _add_repo(p)
     p.set_defaults(func=_cmd_status)
+
+    p = sub.add_parser("predict", help="dry-run a merge: conflicts, where each side came from, was it tested")
+    p.add_argument("source", help="branch to merge in (e.g. DEV)")
+    p.add_argument("--into", required=True, help="branch to merge into (e.g. UAT)")
+    p.add_argument("--prod", help="name of the production branch (e.g. PROD)")
+    p.add_argument("--limit", type=int, default=500)
+    p.add_argument("--json", action="store_true")
+    _add_repo(p)
+    p.set_defaults(func=_cmd_predict)
 
     args = parser.parse_args(argv)
     if not getattr(args, "func", None):

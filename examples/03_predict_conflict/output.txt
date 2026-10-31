@@ -1,0 +1,40 @@
+$ provgit predict DEV --into UAT --prod PROD -C demo-repo     # before: no metadata in this clone
+⚠️  1 conflict: DEV → UAT
+
+settings.py  (Side A line 2, Side B line 2)
+  Side A (UAT):
+     | TIMEOUT = 30  # stop prod outage
+     from 536da8c "Hotfix #812: raise timeout to stop prod outage"   [PROD=db9769c  UAT=536da8c]
+     ⚪ UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance); change is in PROD
+  Side B (DEV):
+     | TIMEOUT = 5  # shorter jobs
+     from 051a3c9 "PR #845: lower timeout for faster batch jobs"   [DEV=051a3c9]
+     ⚪ UNKNOWN — no provenance metadata in this clone (fetch refs/notes/provenance)
+  → Neither side is tested (A: UNKNOWN, B: UNKNOWN). Run CI on both before choosing.
+
+⚠️  Tested alone ≠ tested together. 2 incoming change(s) from DEV are not tested:
+   ⚪ b77b736 PR #830: log retry attempts — UNKNOWN
+   ⚪ 051a3c9 PR #845: lower timeout for faster batch jobs — UNKNOWN
+exit code: 1
+
+$ provgit import-ci demo-repo/ci_results.json -C demo-repo
+imported 1 CI result(s) into refs/notes/provenance
+
+$ provgit predict DEV --into UAT --prod PROD -C demo-repo     # after
+⚠️  1 conflict: DEV → UAT
+
+settings.py  (Side A line 2, Side B line 2)
+  Side A (UAT):
+     | TIMEOUT = 30  # stop prod outage
+     from 536da8c "Hotfix #812: raise timeout to stop prod outage"   [PROD=db9769c  UAT=536da8c]
+     🟢 PROD_VERIFIED — CI passed on db9769c and change is in PROD
+  Side B (DEV):
+     | TIMEOUT = 5  # shorter jobs
+     from 051a3c9 "PR #845: lower timeout for faster batch jobs"   [DEV=051a3c9]
+     🔴 UNTESTED — no CI record for any copy of this change
+  → Keep Side A (UAT): it is PROD_VERIFIED. Side B (DEV) is UNTESTED; test it before taking it.
+
+⚠️  Tested alone ≠ tested together. 2 incoming change(s) from DEV are not tested:
+   🔴 b77b736 PR #830: log retry attempts — UNTESTED
+   🔴 051a3c9 PR #845: lower timeout for faster batch jobs — UNTESTED
+exit code: 1
